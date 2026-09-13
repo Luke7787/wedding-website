@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aviva Lenoff and Benji Gabriel's Wedding Website</title>
+    <meta
+      name="description"
+      content="The wedding website of Aviva Lenoff and Benji Gabriel"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&family=Pinyon+Script&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f7f5f2;
+        --ink: #4e4e4e;
+        --white: #ffffff;
+      }
+
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Libre Baskerville", Georgia, serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img { display: block; max-width: 100%; }
+      a { color: inherit; text-decoration: none; }
+      button, input { font: inherit; }
+
+      .site { background: var(--bg); min-height: 100vh; }
+
+      .menu-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 450;
+      }
+      .menu-overlay.is-open { display: block; }
+
+      .mobile-drawer {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 500;
+        background: var(--bg);
+        padding: 28px 24px 40px;
+        overflow: auto;
+      }
+      .mobile-drawer.is-open { display: block; }
+
+      .drawer-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        cursor: pointer;
+      }
+
+      .drawer-title {
+        font-family: "Pinyon Script", cursive;
+        font-size: 42px;
+        line-height: 1.3;
+        text-align: center;
+        margin: 24px 0 8px;
+      }
+      .drawer-meta { text-align: center; margin-bottom: 4px; }
+      .drawer-nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        margin-top: 32px;
+      }
+
+      .hamburger-wrap {
+        display: none;
+        position: sticky;
+        top: 0;
+        z-index: 400;
+        pointer-events: none;
+      }
+      .hamburger {
+        pointer-events: auto;
+        position: absolute;
+        top: 20px;
+        right: 12px;
+        width: 44px;
+        height: 44px;
+        border: 0;
+        border-radius: 50%;
+        background: #f9f9f9;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        color: #191919;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+      }
+
+      .desktop-header {
+        background: var(--bg);
+        position: sticky;
+        top: 0;
+        z-index: 400;
+      }
+      .brand {
+        margin: 0;
+        padding: 20px 20px 0;
+        text-align: center;
+        min-height: 80px;
+      }
+      .brand a {
+        font-family: "Pinyon Script", cursive;
+        font-size: 42px;
+        font-weight: 400;
+        line-height: 1.3;
+        color: var(--ink);
+      }
+      .nav-bar { padding: 20px 0 12px; }
+      .nav-list {
+        display: flex;
+        justify-content: safe center;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        list-style: none;
+        text-align: center;
+      }
+      .nav-list::-webkit-scrollbar { display: none; }
+      .nav-item {
+        margin: 0 12px;
+        padding: 8px 0;
+        position: relative;
+      }
+      .nav-item::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background: var(--ink);
+        transform: scaleX(0);
+        transition: transform 0.3s;
+      }
+      .nav-item:hover::after,
+      .nav-item.is-active::after,
+      .nav-item:focus-within::after { transform: scaleX(1); }
+
+      .page { display: none; }
+      .page.is-active { display: block; }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 12 / 7;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .marquee {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        display: flex;
+      }
+      .marquee-track {
+        display: flex;
+        height: 100%;
+        width: max-content;
+        animation: marquee 48s linear infinite;
+      }
+      .marquee-track img {
+        height: 100%;
+        width: auto;
+        min-width: 50vw;
+        object-fit: cover;
+      }
+      @keyframes marquee {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+
+      .content {
+        max-width: 1020px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+        padding: 65px 32px 0;
+        text-align: center;
+      }
+
+      .names { padding: 90px 0 40px; width: 100%; }
+      .name {
+        margin: 0;
+        font-family: "Pinyon Script", cursive;
+        font-size: 56px;
+        font-weight: 400;
+        line-height: 1.3;
+      }
+      .and { margin: 32px 0; text-transform: lowercase; }
+      .hashtag { margin: 0 0 40px; }
+      .meta-row {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin: 40px 0;
+      }
+      .meta-row > div { width: 50%; text-align: center; }
+      .meta-city { margin-right: 40px; }
+      .meta-row h3 {
+        margin: 0 0 12px;
+        font-family: "Pinyon Script", cursive;
+        font-size: 40px;
+        font-weight: 400;
+        line-height: 1.3;
+      }
+      .rsvp-wrap { margin: 80px 0; }
+      .btn {
+        display: inline-block;
+        width: 300px;
+        border: none;
+        border-radius: 4px;
+        padding: 16px;
+        background: var(--ink);
+        color: var(--white);
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 16px;
+        text-align: center;
+        cursor: pointer;
+      }
+      .btn.ghost {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--ink);
+      }
+
+      .stories { margin-top: 80px; padding-bottom: 80px; text-align: left; }
+      .story {
+        position: relative;
+        display: flex;
+        align-items: center;
+        overflow-wrap: anywhere;
+      }
+      .story + .story { margin-top: 100px; }
+      .story-title, .story-copy { width: 50%; padding: 32px; }
+      .story-title h3 {
+        margin: 0;
+        font-family: "Pinyon Script", cursive;
+        font-size: 40px;
+        font-weight: 400;
+        line-height: 1.3;
+      }
+      .story-date { margin: 12px 0 24px; }
+      .story-copy p { margin: 0; white-space: pre-wrap; }
+      .story-rule {
+        position: absolute;
+        left: 50%;
+        width: 1px;
+        height: 100%;
+        background: var(--ink);
+      }
+
+      .footer-photo { margin: 80px 0 0; }
+      .footer-photo img { width: 100%; }
+
+      .inner {
+        max-width: 1020px;
+        margin: 0 auto;
+        padding: 72px 32px 40px;
+        text-align: center;
+      }
+      .page-title {
+        margin: 0 0 16px;
+        font-family: "Pinyon Script", cursive;
+        font-size: 56px;
+        font-weight: 400;
+        line-height: 1.3;
+      }
+      .page-intro {
+        max-width: 640px;
+        margin: 0 auto 64px;
+      }
+
+      .party-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 72px 40px;
+        text-align: center;
+      }
+      .party-card img {
+        width: 220px;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin: 0 auto 20px;
+      }
+      .party-card h3 {
+        margin: 0 0 8px;
+        font-family: "Pinyon Script", cursive;
+        font-size: 40px;
+        font-weight: 400;
+        line-height: 1.3;
+      }
+      .party-role { margin-bottom: 12px; }
+      .party-card p { margin: 0 auto; max-width: 360px; }
+
+      .event-list, .travel-list, .faq-list { text-align: left; max-width: 720px; margin: 0 auto; }
+      .event-card, .travel-card, .faq-item {
+        padding: 32px 0;
+        border-bottom: 1px solid #d7d3ce;
+      }
+      .event-card:first-child, .travel-card:first-child, .faq-item:first-child { padding-top: 0; }
+      .event-date { margin-bottom: 8px; }
+      .event-card h3, .travel-card h3, .faq-item h3 {
+        margin: 0 0 8px;
+        font-family: "Pinyon Script", cursive;
+        font-size: 40px;
+        font-weight: 400;
+        line-height: 1.3;
+      }
+      .event-meta, .travel-meta { margin: 8px 0; }
+      .event-note, .travel-note, .faq-item p { margin: 12px 0 0; }
+      .event-links { margin-top: 16px; display: flex; gap: 20px; flex-wrap: wrap; }
+      .event-links a, .poi-view { text-decoration: underline; }
+
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .gallery-grid button {
+        padding: 0;
+        border: 0;
+        background: none;
+        cursor: pointer;
+      }
+      .gallery-grid img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+      }
+
+      .registry-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px 20px;
+        text-align: left;
+      }
+      .gift img {
+        width: 100%;
+        height: 240px;
+        object-fit: contain;
+        background: #fff;
+        margin-bottom: 12px;
+      }
+      .gift-brand { font-size: 13px; margin-bottom: 4px; }
+      .gift h3 { margin: 0 0 6px; font-size: 16px; font-weight: 400; line-height: 1.4; }
+      .gift-price { margin-bottom: 12px; }
+      .gift .btn { width: 100%; }
+
+      .poi-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 56px 32px;
+        text-align: left;
+      }
+      .poi-card img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        margin-bottom: 16px;
+      }
+      .poi-card h3 {
+        margin: 0 0 8px;
+        font-family: "Pinyon Script", cursive;
+        font-size: 32px;
+        font-weight: 400;
+        line-height: 1.3;
+      }
+      .poi-address { margin-bottom: 10px; }
+
+      .rsvp-box { max-width: 480px; margin: 0 auto; text-align: left; }
+      .field { margin-bottom: 20px; }
+      .field label { display: block; margin-bottom: 8px; }
+      .field input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--ink);
+        background: #fff;
+        color: var(--ink);
+      }
+      .rsvp-events { margin-top: 32px; }
+      .rsvp-event {
+        padding: 20px 0;
+        border-top: 1px solid #d7d3ce;
+      }
+      .choices { display: flex; gap: 24px; margin-top: 10px; }
+      .rsvp-thanks { display: none; margin-top: 24px; text-align: center; }
+      .rsvp-thanks.is-visible { display: block; }
+      .rsvp-error { color: #8a2a2a; margin-top: 8px; display: none; }
+      .rsvp-error.is-visible { display: block; }
+
+      .lightbox {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 600;
+        background: rgba(0, 0, 0, 0.88);
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .lightbox.is-open { display: flex; }
+      .lightbox img { max-width: min(1100px, 92vw); max-height: 88vh; }
+      .lightbox button {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        border: 0;
+        background: transparent;
+        color: #fff;
+        font-size: 32px;
+        cursor: pointer;
+      }
+
+      .site-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 40px 20px 80px;
+        margin-top: 80px;
+        font-size: 12px;
+        color: #21201f;
+      }
+      .footer-mark {
+        font-family: "Pinyon Script", cursive;
+        font-size: 28px;
+        margin-bottom: 12px;
+        color: var(--ink);
+      }
+      .footer-tagline { font-size: 14px; margin-bottom: 12px; }
+      .footer-links { display: flex; flex-wrap: wrap; justify-content: center; }
+      .footer-links > * { padding: 4px 12px; }
+
+      @media (max-width: 991px) {
+        .content, .inner { padding-left: 5%; padding-right: 5%; }
+        .content { padding-top: 8px; }
+        .story-rule { display: none; }
+        .gallery-grid { grid-template-columns: 1fr 1fr; }
+        .registry-grid { grid-template-columns: 1fr 1fr; }
+      }
+
+      @media (max-width: 767px) {
+        .desktop-header { display: none; }
+        .hamburger-wrap { display: block; }
+        .hero { aspect-ratio: 1 / 1; }
+        .marquee-track img { min-width: 100vw; }
+        .names { padding: 40px 0; }
+        .name, .page-title { font-size: 14.285714285714286vw; }
+        .and { margin: 20px 0; }
+        .meta-row { flex-direction: column; }
+        .meta-row > div { width: 100%; }
+        .meta-city { margin: 0 0 40px; }
+        .meta-row h3, .party-card h3, .event-card h3, .travel-card h3, .faq-item h3 { font-size: 32px; }
+        .btn { width: 200px; }
+        .story { flex-direction: column; }
+        .story-title, .story-copy { width: 100%; padding: 0; }
+        .party-grid, .poi-grid, .gallery-grid, .registry-grid { grid-template-columns: 1fr; }
+        .inner { padding-top: 72px; }
+        .site-footer { padding: 20px 16px 40px; }
+        .footer-links > * { padding: 12px; }
+      }
+
+      @media (max-width: 479px) {
+        .btn { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site">
+      <div class="menu-overlay" id="menu-overlay" hidden></div>
+      <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <button class="drawer-close" type="button" aria-label="Close menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 18" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M18.57.57a1.5 1.5 0 01.06 2.057l-.06.064-6.449 6.448 6.28 6.28a1.5 1.5 0 01-2.057 2.182l-.064-.06L10 11.26l-6.28 6.28a1.5 1.5 0 01-2.181-2.058l.06-.064 6.28-6.28L1.43 2.69A1.5 1.5 0 013.488.509l.064.06L10 7.019 16.448.57a1.5 1.5 0 012.122 0z"></path>
+          </svg>
+        </button>
+        <div class="drawer-title">Aviva &amp; Benji</div>
+        <div class="drawer-meta">July 13, 2024</div>
+        <div class="drawer-meta">San Francisco, CA</div>
+        <nav class="drawer-nav" aria-label="Mobile">
+          <a href="#home">Home</a>
+          <a href="#wedding-party">Wedding Party</a>
+          <a href="#schedule">Schedule</a>
+          <a href="#travel">Travel</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#registry">Registry</a>
+          <a href="#faqs">FAQs</a>
+          <a href="#things-to-do">Things To Do</a>
+          <a href="#rsvp">RSVP</a>
+        </nav>
+      </div>
+
+      <div class="hamburger-wrap">
+        <button class="hamburger" type="button" aria-label="Open menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21.882 4a1.618 1.618 0 0 1 .095 3.233l-.095.003H1.618a1.618 1.618 0 0 1-.095-3.233L1.618 4h20.264ZM21.882 11a1.618 1.618 0 0 1 .095 3.233l-.095.003H1.618a1.618 1.618 0 0 1-.095-3.233L1.618 11h20.264ZM21.882 18a1.618 1.618 0 0 1 .095 3.233l-.095.003H1.618a1.618 1.618 0 0 1-.095-3.233L1.618 18h20.264Z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <header class="desktop-header">
+        <h2 class="brand"><a href="#home">Aviva &amp; Benji</a></h2>
+        <nav class="nav-bar" aria-label="Primary">
+          <ul class="nav-list">
+            <li class="nav-item is-active" data-nav="home"><a href="#home">Home</a></li>
+            <li class="nav-item" data-nav="wedding-party"><a href="#wedding-party">Wedding Party</a></li>
+            <li class="nav-item" data-nav="schedule"><a href="#schedule">Schedule</a></li>
+            <li class="nav-item" data-nav="travel"><a href="#travel">Travel</a></li>
+            <li class="nav-item" data-nav="gallery"><a href="#gallery">Gallery</a></li>
+            <li class="nav-item" data-nav="registry"><a href="#registry">Registry</a></li>
+            <li class="nav-item" data-nav="faqs"><a href="#faqs">FAQs</a></li>
+            <li class="nav-item" data-nav="things-to-do"><a href="#things-to-do">Things To Do</a></li>
+            <li class="nav-item" data-nav="rsvp"><a href="#rsvp">RSVP</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <main>
+        <section class="page is-active" data-page="home" id="home">
+          <div class="hero" aria-label="Photo marquee">
+            <div class="marquee">
+              <div class="marquee-track">
+                <img src="https://images.zola.com/b11e1d5e-d6e1-4d04-af29-8165f339b7e2?h=2000" alt="" />
+                <img src="https://images.zola.com/68df12c3-9ed5-46fd-a256-2a710d1500d9?h=2000" alt="" />
+                <img src="https://images.zola.com/b11e1d5e-d6e1-4d04-af29-8165f339b7e2?h=2000" alt="" />
+                <img src="https://images.zola.com/68df12c3-9ed5-46fd-a256-2a710d1500d9?h=2000" alt="" />
+                <img src="https://images.zola.com/b11e1d5e-d6e1-4d04-af29-8165f339b7e2?h=2000" alt="" />
+                <img src="https://images.zola.com/68df12c3-9ed5-46fd-a256-2a710d1500d9?h=2000" alt="" />
+                <img src="https://images.zola.com/b11e1d5e-d6e1-4d04-af29-8165f339b7e2?h=2000" alt="" />
+                <img src="https://images.zola.com/68df12c3-9ed5-46fd-a256-2a710d1500d9?h=2000" alt="" />
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="names">
+              <h2 class="name">Benji Gabriel</h2>
+              <div class="and">and</div>
+              <h2 class="name">Aviva Lenoff</h2>
+            </div>
+            <p class="hashtag">#AvivaAndBenji</p>
+            <div class="meta-row">
+              <div class="meta-city">
+                <h3>San Francisco</h3>
+                CA
+              </div>
+              <div>
+                <h3>July 13</h3>
+                2024
+              </div>
+            </div>
+            <div class="rsvp-wrap">
+              <a class="btn" href="#rsvp">RSVP</a>
+            </div>
+            <div class="stories">
+              <article class="story">
+                <div class="story-title">
+                  <h3>How We Met</h3>
+                  <div class="story-date">4.23.19</div>
+                </div>
+                <div class="story-rule"></div>
+                <div class="story-copy">
+                  <p>We met at a classmate's party and didn't think much of it. Then a bunch of us went to karaoke after a long day of back-to-back classes and we both picked, "I’d Do Anything for Love." And it just clicked. He went low, I went high. There were fist pumps. We harmonized by accident. That’s pretty much when we thought, "Okay. This could be something."</p>
+                </div>
+              </article>
+              <article class="story">
+                <div class="story-title">
+                  <h3>The Proposal</h3>
+                  <div class="story-date">4.23.22</div>
+                </div>
+                <div class="story-rule"></div>
+                <div class="story-copy">
+                  <p>On the anniversary of when we first met, we went back to our old stomping grounds to do karaoke with friends. When "I'd Do Anything for Love" came on, we ran up to the front. When the music suddenly died down, I looked over and he was down on one knee. I screamed, shouted "YES," and we were engaged.
+
+We're so excited to celebrate this next chapter in our lives with you.
+
+See you in San Fran!</p>
+                </div>
+              </article>
+            </div>
+            <div class="footer-photo">
+              <img src="https://images.zola.com/626b85fb-b4fe-4d7b-a582-cb08e06163ba?w=2000" alt="Footer image" />
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="wedding-party" id="wedding-party">
+          <div class="inner">
+            <h1 class="page-title">Wedding Party</h1>
+            <p class="page-intro">Meet our family and friends who are walking down the aisle with us.</p>
+            <div class="party-grid">
+              <article class="party-card">
+                <img src="https://images.zola.com/88cb2c75-25a5-40e7-9749-637622794512?w=600" alt="Sarah Miller" />
+                <h3>Sarah Miller</h3>
+                <div class="party-role">Maid of Honor</div>
+                <p>Sure, she’s two years older than the bride, but she might as well have been a twin.</p>
+              </article>
+              <article class="party-card">
+                <img src="https://images.zola.com/bb635e97-14da-4a3b-b3ff-f7487e095363?w=600" alt="William Boyd" />
+                <h3>William Boyd</h3>
+                <div class="party-role">Best Man</div>
+                <p>Lax teammate in high school through college. You could say it’s a bromance, but it might be more than that (and Kate's trying not to be jealous).</p>
+              </article>
+              <article class="party-card">
+                <img src="https://images.zola.com/b56bb9a5-685d-4422-81f0-25404ba7a181?w=600" alt="Jane Smart" />
+                <h3>Jane Smart</h3>
+                <div class="party-role">Bridesmaid</div>
+                <p>We shared a cubby in pre-school—we were neat freaks then and neat freaks now, as evidenced by the spotless apartment we shared until my engagement!</p>
+              </article>
+              <article class="party-card">
+                <img src="https://images.zola.com/ee8c0024-edb3-4075-a3ed-b0d54459226f?w=600" alt="Justin Sands" />
+                <h3>Justin Sands</h3>
+                <div class="party-role">Groomsman</div>
+                <p>Yes, he introduced the happy couple. He gets a seat at the table.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="schedule" id="schedule">
+          <div class="inner">
+            <h1 class="page-title">Schedule</h1>
+            <p class="page-intro">Here's what to expect during our wedding weekend. There will also be a printout of this schedule available in your hotel rooms. We can't wait to celebrate with you!</p>
+            <div class="event-list">
+              <article class="event-card">
+                <div class="event-date">Friday, July 12, 2024</div>
+                <h3>Welcome Drinks</h3>
+                <div class="event-meta">9:00 PM</div>
+                <div class="event-meta">Fairmont</div>
+                <div class="event-meta">950 Mason St, San Francisco, CA 94108</div>
+                <p class="event-note">There will be a few light bites in addition to cocktails. Can't wait to see you!</p>
+                <div class="event-links">
+                  <a href="https://www.google.com/maps?cid=932337608444387060" target="_blank" rel="noreferrer">Map</a>
+                </div>
+              </article>
+              <article class="event-card">
+                <div class="event-date">Saturday, July 13, 2024</div>
+                <h3>Ceremony</h3>
+                <div class="event-meta">5:30 PM</div>
+                <div class="event-meta">Palace of Fine Arts Theatre</div>
+                <div class="event-meta">3301 Lyon Street, San Francisco, CA 94123</div>
+                <p class="event-note">The grass can be a little soft, so you might want to rethink stilettos!</p>
+                <div class="event-links">
+                  <a href="https://www.google.com/maps?cid=10581437488486997804" target="_blank" rel="noreferrer">Map</a>
+                </div>
+              </article>
+              <article class="event-card">
+                <div class="event-date">Saturday, July 13, 2024</div>
+                <h3>Reception</h3>
+                <div class="event-meta">7:00 PM – 11:00 PM</div>
+                <div class="event-meta">Palace of Fine Arts Theatre</div>
+                <div class="event-meta">3301 Lyon Street, San Francisco, CA 94123</div>
+                <p class="event-note">Dinner, drinks and dancing to follow our ceremony! There's an outdoor space that can get a little chilly at night—we recommend bringing a shawl or light jacket.</p>
+                <div class="event-links">
+                  <a href="https://www.google.com/maps?cid=10581437488486997804" target="_blank" rel="noreferrer">Map</a>
+                </div>
+              </article>
+              <article class="event-card">
+                <div class="event-date">Sunday, July 14, 2024</div>
+                <h3>Brunch</h3>
+                <div class="event-meta">10:00 AM – 12:00 PM</div>
+                <div class="event-meta">Fairmont</div>
+                <div class="event-meta">950 Mason St, San Francisco, CA 94108</div>
+                <p class="event-note">Join us for a farewell brunch before everyone heads home.</p>
+                <div class="event-links">
+                  <a href="https://www.google.com/maps?cid=932337608444387060" target="_blank" rel="noreferrer">Map</a>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="travel" id="travel">
+          <div class="inner">
+            <h1 class="page-title">Travel &amp; Places To Stay</h1>
+            <p class="page-intro">Some recommendations for our out-of-towner guests.</p>
+            <div class="travel-list">
+              <article class="travel-card">
+                <h3>San Francisco International Airport</h3>
+                <div class="travel-meta">Airport</div>
+                <p class="travel-note">This is the best place to fly into. You could go to Oakland or San Jose if it is easier for you to get there.</p>
+              </article>
+              <article class="travel-card">
+                <h3>Fairmont</h3>
+                <div class="travel-meta">Hotel</div>
+                <div class="travel-meta">950 Mason St, San Francisco, CA 94108</div>
+                <div class="travel-meta">(415) 772-5000</div>
+                <div class="travel-meta">Booking code: LOVE1</div>
+                <p class="travel-note">This is where we’ll be having our rehearsal dinner and welcome drinks. And it’s not far from our ceremony, either.</p>
+                <div class="event-links">
+                  <a href="https://www.fairmont.com/san-francisco/" target="_blank" rel="noreferrer">Website</a>
+                </div>
+              </article>
+              <article class="travel-card">
+                <h3>Airbnb</h3>
+                <div class="travel-meta">Home rental</div>
+                <p class="travel-note">San Francisco is where Airbnb is based, so there are amazing options all around the city. We live in Nob Hill, but you will love any neighborhood that you pick.</p>
+              </article>
+              <article class="travel-card">
+                <h3>Shuttle From The Fairmont To The Palace Of Fine Arts</h3>
+                <div class="travel-meta">Shuttle</div>
+                <div class="travel-meta">Saturday, July 13, 2024 · 5:00 PM – 11:00 PM</div>
+                <p class="travel-note">A shuttle will be running every hour from the reception back to the main hotel for those who forget their dancing shoes:)</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="gallery" id="gallery">
+          <div class="inner">
+            <h1 class="page-title">Gallery</h1>
+            <p class="page-intro">A few snaps taken of us over the years...</p>
+            <div class="gallery-grid">
+              <button type="button" data-full="https://images.zola.com/0f14b8a8-ea17-40a6-a0cd-5dde20921062?w=1600"><img src="https://images.zola.com/0f14b8a8-ea17-40a6-a0cd-5dde20921062?w=800" alt="" /></button>
+              <button type="button" data-full="https://images.zola.com/ab57f490-5561-4f8b-8fbb-9beb39cadb46?w=1600"><img src="https://images.zola.com/ab57f490-5561-4f8b-8fbb-9beb39cadb46?w=800" alt="" /></button>
+              <button type="button" data-full="https://images.zola.com/1787293e-0f3e-469c-be55-c52dd13b5ed4?w=1600"><img src="https://images.zola.com/1787293e-0f3e-469c-be55-c52dd13b5ed4?w=800" alt="" /></button>
+              <button type="button" data-full="https://images.zola.com/c9745809-0c7d-4143-a064-a3a9610a74d9?w=1600"><img src="https://images.zola.com/c9745809-0c7d-4143-a064-a3a9610a74d9?w=800" alt="" /></button>
+              <button type="button" data-full="https://images.zola.com/e8e663f9-e94b-4cf7-8432-b23cb5d124a4?w=1600"><img src="https://images.zola.com/e8e663f9-e94b-4cf7-8432-b23cb5d124a4?w=800" alt="" /></button>
+              <button type="button" data-full="https://images.zola.com/4d47a172-8f95-46ce-addb-16b448c8cca6?w=1600"><img src="https://images.zola.com/4d47a172-8f95-46ce-addb-16b448c8cca6?w=800" alt="" /></button>
+              <button type="button" data-full="https://images.zola.com/d17b5d05-ddff-4afc-aa6f-e7f5bedad42e?w=1600"><img src="https://images.zola.com/d17b5d05-ddff-4afc-aa6f-e7f5bedad42e?w=800" alt="" /></button>
+              <button type="button" data-full="https://images.zola.com/6f582e02-937a-4dee-a140-ed65af0d9c53?w=1600"><img src="https://images.zola.com/6f582e02-937a-4dee-a140-ed65af0d9c53?w=800" alt="" /></button>
+              <button type="button" data-full="https://images.zola.com/caa69165-a090-4299-816e-e7fdc7722b71?w=1600"><img src="https://images.zola.com/caa69165-a090-4299-816e-e7fdc7722b71?w=800" alt="" /></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="registry" id="registry">
+          <div class="inner">
+            <h1 class="page-title">Registry</h1>
+            <p class="page-intro">A few things we’re hoping to start our home with. This is a preview of the sample registry — no checkout on this site.</p>
+            <div class="registry-grid">
+              <article class="gift">
+                <img src="https://images.zola.com/0b0bfce7-aee7-45fb-bf54-ec8dc5deaa44?w=480" alt="Lismore Vase" />
+                <div class="gift-brand">Waterford</div>
+                <h3>Lismore Vase</h3>
+                <div class="gift-price">$195</div>
+                <a class="btn ghost" href="#registry">View gift</a>
+              </article>
+              <article class="gift">
+                <img src="https://images.zola.com/612f9dfc-da30-4a1f-8499-2b58853cd886?w=480" alt="Classic Rim place setting" />
+                <div class="gift-brand">Fiesta</div>
+                <h3>Classic Rim 4-Piece Place Setting</h3>
+                <div class="gift-price">$52.99</div>
+                <a class="btn ghost" href="#registry">View gift</a>
+              </article>
+              <article class="gift">
+                <img src="https://images.zola.com/afed97bc-eba1-4ad1-9826-fa2935dec3d8?w=480" alt="Braid Glass Salad Bowl" />
+                <div class="gift-brand">Nambé</div>
+                <h3>Braid Glass Salad Bowl with Servers</h3>
+                <div class="gift-price">$213.99</div>
+                <a class="btn ghost" href="#registry">View gift</a>
+              </article>
+              <article class="gift">
+                <img src="https://images.zola.com/7e7056d4-0c24-411c-a191-76e091eec616?w=480" alt="Mini Smart Toaster Oven" />
+                <div class="gift-brand">Breville</div>
+                <h3>Mini Smart Toaster Oven</h3>
+                <div class="gift-price">$159.99</div>
+                <a class="btn ghost" href="#registry">View gift</a>
+              </article>
+              <article class="gift">
+                <img src="https://images.zola.com/d7130835-ccd2-4c1d-b0e0-d24aabe93206?w=480" alt="14-Cup Coffee Maker" />
+                <div class="gift-brand">KitchenAid</div>
+                <h3>14-Cup Coffee Maker</h3>
+                <div class="gift-price">$99.99</div>
+                <a class="btn ghost" href="#registry">View gift</a>
+              </article>
+              <article class="gift">
+                <img src="https://images.zola.com/8870c024-b6ef-4db3-9ebb-3e9c978482e7?w=480" alt="Luxe Sateen sheet set" />
+                <div class="gift-brand">Brooklinen</div>
+                <h3>Luxe Sateen 7-Piece Sheet &amp; Duvet Bundle</h3>
+                <div class="gift-price">$270</div>
+                <a class="btn ghost" href="#registry">View gift</a>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="faqs" id="faqs">
+          <div class="inner">
+            <h1 class="page-title">FAQs</h1>
+            <p class="page-intro">If you have any other questions other than what we’ve listed here, please reach out to our wedding planner, Annie, at 555-555-5555.</p>
+            <div class="faq-list">
+              <article class="faq-item">
+                <h3>Are kids invited?</h3>
+                <p>We love your kids—we really do. But we want our wedding to be your night off! We've booked a couple babysitters to make that a reality.</p>
+              </article>
+              <article class="faq-item">
+                <h3>Is there transportation to and from the hotels to the ceremony?</h3>
+                <p>Yes, check out our <a href="#travel">Travel</a> page for all the info you need.</p>
+              </article>
+              <article class="faq-item">
+                <h3>Can I bring a date?</h3>
+                <p>If your invitation says "and Guest," then yes, if not, we would prefer if it was just you.</p>
+              </article>
+              <article class="faq-item">
+                <h3>What’s the dress code?</h3>
+                <p>Cocktail, please. But we want you to feel comfortable, so if those shoes are too high or that top button is too tight, let it all hang loose.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="things-to-do" id="things-to-do">
+          <div class="inner">
+            <h1 class="page-title">Things To Do</h1>
+            <p class="page-intro">We’re so excited to share a few of our favorite places in the area with you.</p>
+            <div class="poi-grid">
+              <article class="poi-card">
+                <img src="https://images.zola.com/38d41db4-7e57-46ef-a2bd-c26f4a672b09?w=800" alt="Golden Gate Bridge" />
+                <h3>Golden Gate Bridge</h3>
+                <div class="poi-address">San Francisco, CA 94129</div>
+                <p>We know this is cliché, but it’s a must see. A great walk or bike ride for the rare day that it is sunny out.</p>
+                <a class="poi-view" href="https://maps.google.com/?cid=11409791206956908013" target="_blank" rel="noreferrer">View</a>
+              </article>
+              <article class="poi-card">
+                <img src="https://images.zola.com/6b155d79-188f-4d12-a656-d5802eee900d?w=800" alt="Pizzeria Picco" />
+                <h3>Pizzeria Picco</h3>
+                <div class="poi-address">316 Magnolia Avenue, Larkspur, CA 94939 · (415) 945-8900</div>
+                <p>About 30 minutes outside of the city, this is such yummy pizza (and frozen yogurt) it is worth the trip. Great if you are staying in San Francisco for longer, and very easy to make a pit-stop on your way to or from Napa.</p>
+                <a class="poi-view" href="http://www.pizzeriapicco.com/" target="_blank" rel="noreferrer">View</a>
+              </article>
+              <article class="poi-card">
+                <img src="https://images.zola.com/36581dc9-2f77-4d1c-80c6-a8f6019b2280?w=800" alt="Silver Cloud Restaurant & Karaoke Bar" />
+                <h3>Silver Cloud Restaurant &amp; Karaoke Bar</h3>
+                <div class="poi-address">1994 Lombard Street, San Francisco, CA 94123 · (415) 922-1977</div>
+                <p>Back to where it all began. Single friends, maybe you'll find love here, too!</p>
+                <a class="poi-view" href="http://silvercloudsf.com/" target="_blank" rel="noreferrer">View</a>
+              </article>
+              <article class="poi-card">
+                <img src="https://images.zola.com/43cdcb80-dc37-42cf-9a0c-0edf686d1702?w=800" alt="SFMOMA" />
+                <h3>San Francisco Museum of Modern Art</h3>
+                <div class="poi-address">151 3rd Street, San Francisco, CA 94103 · (415) 357-4000</div>
+                <p>One of the best collections of modern artwork on the West Coast. A must see!</p>
+                <a class="poi-view" href="http://www.sfmoma.org/" target="_blank" rel="noreferrer">View</a>
+              </article>
+              <article class="poi-card">
+                <img src="https://images.zola.com/e9bc9d93-66e8-4aee-8c05-135765ec8941?w=800" alt="Philz Coffee Truck" />
+                <h3>Philz Coffee Truck</h3>
+                <div class="poi-address">3950 Scott Street, San Francisco, CA 94123 · (415) 357-4000</div>
+                <p>The best coffee in town, from the Philz Coffee Truck. Go on a jog around Crissy Field and then end with some coffee.</p>
+                <a class="poi-view" href="https://maps.google.com/?cid=3673857893372605155" target="_blank" rel="noreferrer">View</a>
+              </article>
+              <article class="poi-card">
+                <img src="https://images.zola.com/20d57209-5ee1-471e-846f-998187470916?w=800" alt="Mission Dolores Park" />
+                <h3>Mission Dolores Park</h3>
+                <div class="poi-address">Dolores Park, San Francisco, CA 94114</div>
+                <p>When it is nice out, we love to hang out in the park, and even grab some of the best ice cream in SF at Bi-Rite Creamery.</p>
+              </article>
+              <article class="poi-card">
+                <img src="https://images.zola.com/71b137cd-3a7a-458d-9ec4-7115d10cc8ce?w=800" alt="Bi-Rite Creamery" />
+                <h3>Bi-Rite Creamery</h3>
+                <div class="poi-address">3692 18th Street, San Francisco, CA 94110 · (415) 626-5600</div>
+                <p>Best ice cream in SF, hands down.</p>
+                <a class="poi-view" href="http://biritecreamery.com/" target="_blank" rel="noreferrer">View</a>
+              </article>
+              <article class="poi-card">
+                <img src="https://images.zola.com/fbee8a54-cd61-4780-85ae-3258b4b59da7?w=800" alt="Outerlands" />
+                <h3>Outerlands</h3>
+                <div class="poi-address">4001 Judah Street, San Francisco, CA 94122 · (415) 661-6140</div>
+                <p>For a great grilled cheese sandwich, make a trip to Outerlands. Then walk the few blocks to Ocean Beach. The General Store is a very cute store to check out on your way. It's where we got the blanket in our apartment!</p>
+                <a class="poi-view" href="http://outerlandssf.com/" target="_blank" rel="noreferrer">View</a>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="rsvp" id="rsvp">
+          <div class="inner">
+            <h1 class="page-title">RSVP</h1>
+            <p class="page-intro">Enter your first and last name to find your invitation, then let us know if you’ll be there.</p>
+            <form class="rsvp-box" id="rsvp-form">
+              <div class="field">
+                <label for="first-name">First name</label>
+                <input id="first-name" name="first" autocomplete="given-name" required />
+              </div>
+              <div class="field">
+                <label for="last-name">Last name</label>
+                <input id="last-name" name="last" autocomplete="family-name" required />
+              </div>
+              <button class="btn" type="submit">Find</button>
+              <p class="rsvp-error" id="rsvp-error">Please enter both your first and last name.</p>
+
+              <div class="rsvp-events" id="rsvp-events" hidden>
+                <p id="rsvp-hello"></p>
+                <div class="rsvp-event">
+                  <strong>Welcome Drinks</strong>
+                  <div>Friday, July 12 · 9:00 PM · Fairmont</div>
+                  <div class="choices">
+                    <label><input type="radio" name="welcome" value="yes" checked /> Attending</label>
+                    <label><input type="radio" name="welcome" value="no" /> Declining</label>
+                  </div>
+                </div>
+                <div class="rsvp-event">
+                  <strong>Ceremony &amp; Reception</strong>
+                  <div>Saturday, July 13 · Palace of Fine Arts Theatre</div>
+                  <div class="choices">
+                    <label><input type="radio" name="wedding" value="yes" checked /> Attending</label>
+                    <label><input type="radio" name="wedding" value="no" /> Declining</label>
+                  </div>
+                </div>
+                <div class="rsvp-event">
+                  <strong>Brunch</strong>
+                  <div>Sunday, July 14 · 10:00 AM · Fairmont</div>
+                  <div class="choices">
+                    <label><input type="radio" name="brunch" value="yes" checked /> Attending</label>
+                    <label><input type="radio" name="brunch" value="no" /> Declining</label>
+                  </div>
+                </div>
+                <button class="btn" type="button" id="rsvp-submit" style="margin-top: 24px;">Submit RSVP</button>
+              </div>
+              <div class="rsvp-thanks" id="rsvp-thanks">Thank you — we’ve saved your RSVP for this preview site.</div>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-mark">Aviva &amp; Benji</div>
+        <span class="footer-tagline">For all the days along the way</span>
+        <div class="footer-links">
+          <a href="#home">Home</a>
+          <a href="#wedding-party">Wedding Party</a>
+          <a href="#schedule">Schedule</a>
+          <a href="#travel">Travel</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#registry">Registry</a>
+          <a href="#faqs">FAQs</a>
+          <a href="#things-to-do">Things To Do</a>
+          <a href="#rsvp">RSVP</a>
+        </div>
+      </footer>
+    </div>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo">
+      <button type="button" aria-label="Close">&times;</button>
+      <img alt="" />
+    </div>
+
+    <script>
+      const pages = ["home", "wedding-party", "schedule", "travel", "gallery", "registry", "faqs", "things-to-do", "rsvp"];
+      const overlay = document.getElementById("menu-overlay");
+      const drawer = document.getElementById("mobile-drawer");
+      const openBtn = document.querySelector(".hamburger");
+      const closeBtn = document.querySelector(".drawer-close");
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = lightbox.querySelector("img");
+
+      function openMenu() {
+        overlay.hidden = false;
+        drawer.hidden = false;
+        overlay.classList.add("is-open");
+        drawer.classList.add("is-open");
+      }
+
+      function closeMenu() {
+        overlay.classList.remove("is-open");
+        drawer.classList.remove("is-open");
+        overlay.hidden = true;
+        drawer.hidden = true;
+      }
+
+      function currentPage() {
+        const hash = (location.hash || "#home").replace("#", "");
+        return pages.includes(hash) ? hash : "home";
+      }
+
+      function showPage(id) {
+        document.querySelectorAll(".page").forEach((page) => {
+          page.classList.toggle("is-active", page.dataset.page === id);
+        });
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.classList.toggle("is-active", item.dataset.nav === id);
+        });
+        document.title =
+          id === "home"
+            ? "Aviva Lenoff and Benji Gabriel's Wedding Website"
+            : document.querySelector(`[data-page="${id}"] .page-title`)?.textContent +
+              " | Aviva & Benji";
+        window.scrollTo(0, 0);
+      }
+
+      function syncFromHash() {
+        showPage(currentPage());
+      }
+
+      openBtn.addEventListener("click", openMenu);
+      closeBtn.addEventListener("click", closeMenu);
+      overlay.addEventListener("click", closeMenu);
+      drawer.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", closeMenu);
+      });
+      window.addEventListener("hashchange", syncFromHash);
+      syncFromHash();
+
+      document.querySelectorAll(".gallery-grid button").forEach((button) => {
+        button.addEventListener("click", () => {
+          lightboxImg.src = button.dataset.full;
+          lightbox.classList.add("is-open");
+        });
+      });
+      lightbox.addEventListener("click", () => {
+        lightbox.classList.remove("is-open");
+        lightboxImg.src = "";
+      });
+
+      const rsvpForm = document.getElementById("rsvp-form");
+      const rsvpEvents = document.getElementById("rsvp-events");
+      const rsvpError = document.getElementById("rsvp-error");
+      const rsvpThanks = document.getElementById("rsvp-thanks");
+      rsvpForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const first = document.getElementById("first-name").value.trim();
+        const last = document.getElementById("last-name").value.trim();
+        rsvpThanks.classList.remove("is-visible");
+        if (!first || !last) {
+          rsvpError.classList.add("is-visible");
+          rsvpEvents.hidden = true;
+          return;
+        }
+        rsvpError.classList.remove("is-visible");
+        document.getElementById("rsvp-hello").textContent =
+          "Hi " + first + " " + last + " — we found your invitation.";
+        rsvpEvents.hidden = false;
+      });
+      document.getElementById("rsvp-submit").addEventListener("click", () => {
+        rsvpThanks.classList.add("is-visible");
+      });
+    </script>
+  </body>
+</html>
