@@ -566,12 +566,14 @@
         display: block;
         margin-bottom: 8px;
       }
-      .field input {
+      .field input,
+      .field select {
         width: 100%;
         padding: 12px 14px;
         border: 1px solid var(--ink);
         background: #fff;
         color: var(--ink);
+        font: inherit;
       }
       .rsvp-events {
         margin-top: 32px;
@@ -589,6 +591,28 @@
         display: flex;
         gap: 24px;
         margin-top: 10px;
+      }
+      .guest-list {
+        margin-top: 8px;
+      }
+      .guest-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #ece8e3;
+      }
+      .guest-row:first-child {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+      }
+      .guest-heading {
+        grid-column: 1 / -1;
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
       }
       .rsvp-thanks {
         display: none;
@@ -754,6 +778,9 @@
       @media (max-width: 479px) {
         .btn {
           width: 100%;
+        }
+        .guest-row {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -1479,46 +1506,45 @@
               <div class="rsvp-events" id="rsvp-events" hidden>
                 <p id="rsvp-hello"></p>
                 <div class="rsvp-event">
-                  <strong>Welcome Drinks</strong>
-                  <div>Friday, July 12 · 9:00 PM · Fairmont</div>
+                  <strong>Wedding</strong>
+                  <div>Saturday, July 10, 2027</div>
+                  <p style="margin: 16px 0 0">
+                    Will you be able to join us?
+                  </p>
                   <div class="choices">
                     <label
-                      ><input type="radio" name="welcome" value="yes" checked />
+                      ><input
+                        type="radio"
+                        name="weekend"
+                        value="yes"
+                        checked
+                      />
                       Attending</label
                     >
                     <label
-                      ><input type="radio" name="welcome" value="no" />
+                      ><input type="radio" name="weekend" value="no" />
                       Declining</label
                     >
                   </div>
                 </div>
-                <div class="rsvp-event">
-                  <strong>Ceremony &amp; Reception</strong>
-                  <div>Saturday, July 13 · Palace of Fine Arts Theatre</div>
-                  <div class="choices">
-                    <label
-                      ><input type="radio" name="wedding" value="yes" checked />
-                      Attending</label
-                    >
-                    <label
-                      ><input type="radio" name="wedding" value="no" />
-                      Declining</label
-                    >
+                <div class="rsvp-event" id="rsvp-party">
+                  <strong>Your party</strong>
+                  <p style="margin: 0 0 16px">
+                    Including yourself, how many people will be in your party?
+                    Please list each guest’s name and relation to you.
+                  </p>
+                  <div class="field">
+                    <label for="party-size">Total people in your party</label>
+                    <input
+                      id="party-size"
+                      name="partySize"
+                      type="number"
+                      min="1"
+                      max="12"
+                      value="1"
+                    />
                   </div>
-                </div>
-                <div class="rsvp-event">
-                  <strong>Brunch</strong>
-                  <div>Sunday, July 14 · 10:00 AM · Fairmont</div>
-                  <div class="choices">
-                    <label
-                      ><input type="radio" name="brunch" value="yes" checked />
-                      Attending</label
-                    >
-                    <label
-                      ><input type="radio" name="brunch" value="no" />
-                      Declining</label
-                    >
-                  </div>
+                  <div class="guest-list" id="guest-list"></div>
                 </div>
                 <button
                   class="btn"
@@ -1635,6 +1661,65 @@
       const rsvpEvents = document.getElementById("rsvp-events");
       const rsvpError = document.getElementById("rsvp-error");
       const rsvpThanks = document.getElementById("rsvp-thanks");
+      const rsvpParty = document.getElementById("rsvp-party");
+      const partySizeInput = document.getElementById("party-size");
+      const guestList = document.getElementById("guest-list");
+      let lookupName = "";
+
+      function isAttending() {
+        return (
+          document.querySelector('input[name="weekend"]:checked')?.value ===
+          "yes"
+        );
+      }
+
+      function collectGuests() {
+        return [...guestList.querySelectorAll(".guest-row")].map((row) => ({
+          name: row.querySelector('[name="guest-name"]').value,
+          relation: row.querySelector('[name="guest-relation"]').value,
+        }));
+      }
+
+      function renderGuests(count) {
+        const previous = collectGuests();
+        guestList.replaceChildren();
+        for (let i = 0; i < count; i += 1) {
+          const row = document.createElement("div");
+          row.className = "guest-row";
+          const heading = document.createElement("p");
+          heading.className = "guest-heading";
+          heading.textContent = "Guest " + (i + 1);
+          const nameField = document.createElement("div");
+          nameField.className = "field";
+          nameField.innerHTML =
+            '<label>Full name</label><input name="guest-name" autocomplete="name" required />';
+          const relationField = document.createElement("div");
+          relationField.className = "field";
+          relationField.innerHTML =
+            '<label>Relation</label><input name="guest-relation" placeholder="Spouse, child, plus-one…" required />';
+          const nameInput = nameField.querySelector("input");
+          const relationInput = relationField.querySelector("input");
+          if (previous[i]) {
+            nameInput.value = previous[i].name;
+            relationInput.value = previous[i].relation;
+          } else if (i === 0 && lookupName) {
+            nameInput.value = lookupName;
+            relationInput.value = "Self";
+          }
+          row.append(heading, nameField, relationField);
+          guestList.append(row);
+        }
+      }
+
+      function syncPartyFields() {
+        const attending = isAttending();
+        rsvpParty.hidden = !attending;
+        partySizeInput.required = attending;
+        guestList.querySelectorAll("input").forEach((input) => {
+          input.required = attending;
+        });
+      }
+
       rsvpForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const first = document.getElementById("first-name").value.trim();
@@ -1646,11 +1731,42 @@
           return;
         }
         rsvpError.classList.remove("is-visible");
+        lookupName = first + " " + last;
         document.getElementById("rsvp-hello").textContent =
-          "Hi " + first + " " + last + " — we found your invitation.";
+          "Hi " + lookupName + " — we found your invitation.";
+        partySizeInput.value = "1";
+        renderGuests(1);
+        syncPartyFields();
         rsvpEvents.hidden = false;
       });
+      document.querySelectorAll('input[name="weekend"]').forEach((input) => {
+        input.addEventListener("change", syncPartyFields);
+      });
+      partySizeInput.addEventListener("input", () => {
+        const count = Math.min(
+          12,
+          Math.max(1, Number(partySizeInput.value) || 1),
+        );
+        partySizeInput.value = String(count);
+        renderGuests(count);
+        syncPartyFields();
+      });
       document.getElementById("rsvp-submit").addEventListener("click", () => {
+        if (isAttending()) {
+          const guests = collectGuests();
+          const incomplete = guests.some(
+            (guest) => !guest.name.trim() || !guest.relation.trim(),
+          );
+          if (incomplete) {
+            rsvpError.textContent =
+              "Please enter a name and relation for each person in your party.";
+            rsvpError.classList.add("is-visible");
+            rsvpThanks.classList.remove("is-visible");
+            return;
+          }
+        }
+        rsvpError.classList.remove("is-visible");
+        rsvpError.textContent = "Please enter both your first and last name.";
         rsvpThanks.classList.add("is-visible");
       });
     </script>
