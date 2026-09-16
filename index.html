@@ -1742,11 +1742,20 @@
       document.querySelectorAll('input[name="weekend"]').forEach((input) => {
         input.addEventListener("change", syncPartyFields);
       });
+      function parsedPartySize() {
+        const parsed = Number.parseInt(partySizeInput.value, 10);
+        if (!Number.isFinite(parsed) || parsed < 1) return null;
+        return Math.min(12, parsed);
+      }
+
       partySizeInput.addEventListener("input", () => {
-        const count = Math.min(
-          12,
-          Math.max(1, Number(partySizeInput.value) || 1),
-        );
+        const count = parsedPartySize();
+        if (count == null) return;
+        renderGuests(count);
+        syncPartyFields();
+      });
+      partySizeInput.addEventListener("blur", () => {
+        const count = parsedPartySize() ?? 1;
         partySizeInput.value = String(count);
         renderGuests(count);
         syncPartyFields();
