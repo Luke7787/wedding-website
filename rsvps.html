@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSVPs | Luke &amp; Gizelle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&family=Pinyon+Script&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f7f5f2;
+        --ink: #4e4e4e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 40px 20px 80px;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Libre Baskerville", serif;
+        line-height: 1.5;
+      }
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-family: "Pinyon Script", cursive;
+        font-size: 48px;
+        font-weight: 400;
+        margin: 0 0 12px;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 24px 0;
+      }
+      input,
+      button {
+        font: inherit;
+        color: var(--ink);
+      }
+      input {
+        flex: 1;
+        min-width: 220px;
+        padding: 12px 14px;
+        border: 1px solid var(--ink);
+        background: #fff;
+      }
+      button {
+        border: 0;
+        border-radius: 4px;
+        padding: 12px 20px;
+        background: var(--ink);
+        color: #fff;
+        cursor: pointer;
+      }
+      .error {
+        color: #8a2a2a;
+      }
+      article {
+        padding: 20px 0;
+        border-top: 1px solid #d7d3ce;
+      }
+      article strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+      ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>RSVPs</h1>
+      <p>Enter the admin key from your <code>.env</code> file to view responses.</p>
+      <div class="row">
+        <input id="admin-key" type="password" placeholder="Admin key" />
+        <button type="button" id="load">Load RSVPs</button>
+      </div>
+      <p class="error" id="status" hidden></p>
+      <div id="list"></div>
+    </main>
+    <script>
+      const keyInput = document.getElementById("admin-key");
+      const status = document.getElementById("status");
+      const list = document.getElementById("list");
+      keyInput.value = sessionStorage.getItem("rsvp-admin-key") || "";
+
+      document.getElementById("load").addEventListener("click", async () => {
+        const key = keyInput.value.trim();
+        sessionStorage.setItem("rsvp-admin-key", key);
+        status.hidden = true;
+        list.replaceChildren();
+        try {
+          const response = await fetch("/api/rsvps", {
+            headers: { "x-admin-key": key },
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "Could not load RSVPs.");
+          }
+          if (!data.rsvps.length) {
+            status.textContent = "No RSVPs yet.";
+            status.hidden = false;
+            return;
+          }
+          data.rsvps.forEach((rsvp) => {
+            const article = document.createElement("article");
+            const title = document.createElement("strong");
+            title.textContent =
+              rsvp.firstName +
+              " " +
+              rsvp.lastName +
+              " — " +
+              (rsvp.attending ? "Attending" : "Declining");
+            const meta = document.createElement("div");
+            meta.textContent = rsvp.attending
+              ? rsvp.partySize + " in party"
+              : "Not attending";
+            article.append(title, meta);
+            if (rsvp.attending && rsvp.guests?.length) {
+              const guests = document.createElement("ul");
+              rsvp.guests.forEach((guest) => {
+                const item = document.createElement("li");
+                item.textContent = guest.name + " (" + guest.relation + ")";
+                guests.append(item);
+              });
+              article.append(guests);
+            }
+            list.append(article);
+          });
+        } catch (error) {
+          status.textContent = error.message;
+          status.hidden = false;
+        }
+      });
+    </script>
+  </body>
+</html>

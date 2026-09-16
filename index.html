@@ -303,6 +303,10 @@
       .rsvp-box .btn {
         width: 100%;
       }
+      .rsvp-box .btn:disabled {
+        opacity: 0.65;
+        cursor: wait;
+      }
       .btn.ghost {
         background: transparent;
         color: var(--ink);
@@ -1556,7 +1560,7 @@
                 </button>
               </div>
               <div class="rsvp-thanks" id="rsvp-thanks">
-                Thank you — we’ve saved your RSVP for this preview site.
+                Thank you — your RSVP has been saved.
               </div>
             </form>
           </div>
@@ -1760,11 +1764,20 @@
         renderGuests(count);
         syncPartyFields();
       });
-      document.getElementById("rsvp-submit").addEventListener("click", () => {
-        if (isAttending()) {
-          const guests = collectGuests();
+      const rsvpSubmit = document.getElementById("rsvp-submit");
+      rsvpSubmit.addEventListener("click", async () => {
+        const first = document.getElementById("first-name").value.trim();
+        const last = document.getElementById("last-name").value.trim();
+        const attending = isAttending();
+        const guests = attending
+          ? collectGuests().map((guest) => ({
+              name: guest.name.trim(),
+              relation: guest.relation.trim(),
+            }))
+          : [];
+        if (attending) {
           const incomplete = guests.some(
-            (guest) => !guest.name.trim() || !guest.relation.trim(),
+            (guest) => !guest.name || !guest.relation,
           );
           if (incomplete) {
             rsvpError.textContent =
@@ -1776,7 +1789,34 @@
         }
         rsvpError.classList.remove("is-visible");
         rsvpError.textContent = "Please enter both your first and last name.";
-        rsvpThanks.classList.add("is-visible");
+        rsvpThanks.classList.remove("is-visible");
+        rsvpSubmit.disabled = true;
+        rsvpSubmit.textContent = "Saving…";
+        try {
+          const response = await fetch("/api/rsvp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              firstName: first,
+              lastName: last,
+              attending,
+              guests,
+            }),
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(data.error || "Could not save your RSVP.");
+          }
+          rsvpThanks.classList.add("is-visible");
+        } catch (error) {
+          rsvpError.textContent =
+            error.message ||
+            "Could not save your RSVP. Please try again in a moment.";
+          rsvpError.classList.add("is-visible");
+        } finally {
+          rsvpSubmit.disabled = false;
+          rsvpSubmit.textContent = "Submit RSVP";
+        }
       });
     </script>
   </body>
