@@ -464,6 +464,23 @@
         font-weight: 400;
         line-height: 1.3;
       }
+      .event-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 0 0 8px;
+      }
+      .event-heading h3 {
+        margin: 0;
+        min-width: 0;
+      }
+      .event-time {
+        margin: 0;
+        flex-shrink: 0;
+        text-align: right;
+        white-space: nowrap;
+      }
       .event-meta,
       .travel-meta {
         margin: 8px 0;
@@ -750,6 +767,9 @@
         .travel-card h3,
         .faq-item h3 {
           font-size: 32px;
+        }
+        .event-heading {
+          padding-right: 48px;
         }
         .btn {
           width: 200px;
@@ -1083,10 +1103,12 @@
             </div>
             <div class="event-list">
               <article class="event-card">
-                <h3>Ceremony</h3>
-                <div class="event-meta">12:00 PM – 1:30 PM</div>
-                <div class="event-meta">Edwards Barn</div>
-                <div class="event-meta">1095 Pomeroy Rd, Nipomo, CA 93444</div>
+                <div class="event-heading">
+                  <h3>Ceremony</h3>
+                  <div class="event-time">12:00 PM – 1:30 PM</div>
+                </div>
+                <div class="event-meta">St. Louis de Montfort Church</div>
+                <div class="event-meta">1190 E Clark Ave, Santa Maria, CA 93455</div>
                 <p class="event-note">
                   <strong
                     >Please arrive a few minutes early to get settled.</strong
@@ -1094,7 +1116,7 @@
                 </p>
                 <div class="event-links">
                   <a
-                    href="https://www.google.com/search?client=safari&hs=qZxV&sca_esv=c3fa94b0e0973b9d&rls=en&sxsrf=APpeQnsOBKpj0bHV1D8LBjsNd4s-o01CEw:1789322951617&q=edwards+barn+address&ludocid=1713003094888780803&sa=X&ved=2ahUKEwiUjK23k-yWAxUFGDQIHaIeAvkQ6BN6BAgiEAI"
+                    href="https://www.google.com/maps/place/1190+E+Clark+Ave,+Santa+Maria,+CA+93455/@34.8645102,-120.4173915,17z/data=!3m1!4b1!4m6!3m5!1s0x80ec1397baaf37fd:0x74afc2ba1c8e0d32!8m2!3d34.8645058!4d-120.4148166!16s%2Fg%2F11bw40qsq2?entry=ttu&g_ep=EgoyMDI2MDkxNC4wIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noreferrer"
                     >Directions</a
@@ -1102,8 +1124,10 @@
                 </div>
               </article>
               <article class="event-card">
-                <h3>Welcome Drinks</h3>
-                <div class="event-meta">6:00 PM</div>
+                <div class="event-heading">
+                  <h3>Welcome Drinks</h3>
+                  <div class="event-time">6:00 PM</div>
+                </div>
                 <div class="event-meta">Edwards Barn</div>
                 <div class="event-meta">1095 Pomeroy Rd, Nipomo, CA 93444</div>
                 <p class="event-note">
@@ -1114,7 +1138,7 @@
                 </p>
                 <div class="event-links">
                   <a
-                    href="https://www.google.com/search?client=safari&hs=qZxV&sca_esv=c3fa94b0e0973b9d&rls=en&sxsrf=APpeQnsOBKpj0bHV1D8LBjsNd4s-o01CEw:1789322951617&q=edwards+barn+address&ludocid=1713003094888780803&sa=X&ved=2ahUKEwiUjK23k-yWAxUFGDQIHaIeAvkQ6BN6BAgiEAI"
+                    href="https://www.google.com/maps/place/Edwards+Barn/@35.0469287,-120.5274788,17z/data=!3m1!4b1!4m6!3m5!1s0x80ec67fe336ea0a7:0x17c5cf3d29fd9403!8m2!3d35.0469243!4d-120.5249039!16s%2Fg%2F11crzvr599?entry=ttu&g_ep=EgoyMDI2MDkxNC4wIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noreferrer"
                     >Directions</a
@@ -1122,8 +1146,10 @@
                 </div>
               </article>
               <article class="event-card">
-                <h3>Reception</h3>
-                <div class="event-meta">7:00 PM – 10:00 PM</div>
+                <div class="event-heading">
+                  <h3>Reception</h3>
+                  <div class="event-time">7:00 PM – 10:00 PM</div>
+                </div>
                 <div class="event-meta">Edwards Barn</div>
                 <div class="event-meta">1095 Pomeroy Rd, Nipomo, CA 93444</div>
                 <p class="event-note">
@@ -1133,7 +1159,7 @@
                 </p>
                 <div class="event-links">
                   <a
-                    href="https://www.google.com/search?client=safari&hs=qZxV&sca_esv=c3fa94b0e0973b9d&rls=en&sxsrf=APpeQnsOBKpj0bHV1D8LBjsNd4s-o01CEw:1789322951617&q=edwards+barn+address&ludocid=1713003094888780803&sa=X&ved=2ahUKEwiUjK23k-yWAxUFGDQIHaIeAvkQ6BN6BAgiEAI"
+                    href="https://www.google.com/maps/place/Edwards+Barn/@35.0469287,-120.5274788,17z/data=!3m1!4b1!4m6!3m5!1s0x80ec67fe336ea0a7:0x17c5cf3d29fd9403!8m2!3d35.0469243!4d-120.5249039!16s%2Fg%2F11crzvr599?entry=ttu&g_ep=EgoyMDI2MDkxNC4wIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noreferrer"
                     >Directions</a
