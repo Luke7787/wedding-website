@@ -505,15 +505,28 @@
         gap: 12px;
       }
       .gallery-grid button {
+        display: block;
+        width: 100%;
         padding: 0;
         border: 0;
         background: none;
         cursor: pointer;
+        overflow: hidden;
       }
       .gallery-grid img {
         width: 100%;
         height: 260px;
         object-fit: cover;
+      }
+      .gallery-grid img.gallery-zoom {
+        transform: scale(1.45);
+        object-position: 50% 40%;
+      }
+      .gallery-grid img.gallery-top {
+        object-position: 50% 26%;
+      }
+      .gallery-grid img.gallery-bottom {
+        object-position: 50% 68%;
       }
 
       .registry-grid {
@@ -998,8 +1011,8 @@
             </div>
             <div class="footer-photo">
               <img
-                src="https://images.zola.com/626b85fb-b4fe-4d7b-a582-cb08e06163ba?w=2000"
-                alt="Footer image"
+                src="./images/golden-gate.JPG"
+                alt="Golden Gate Bridge"
               />
             </div>
           </div>
@@ -1214,86 +1227,17 @@
             <h1 class="page-title">Gallery</h1>
             <p class="page-intro">A few snaps taken of us over the years...</p>
             <div class="gallery-grid">
-              <button
-                type="button"
-                data-full="https://images.zola.com/0f14b8a8-ea17-40a6-a0cd-5dde20921062?w=1600"
-              >
-                <img
-                  src="https://images.zola.com/0f14b8a8-ea17-40a6-a0cd-5dde20921062?w=800"
-                  alt=""
-                />
+              <button type="button" data-full="./images/gallery1.jpg">
+                <img src="./images/gallery1.jpg" alt="" />
               </button>
-              <button
-                type="button"
-                data-full="https://images.zola.com/ab57f490-5561-4f8b-8fbb-9beb39cadb46?w=1600"
-              >
-                <img
-                  src="https://images.zola.com/ab57f490-5561-4f8b-8fbb-9beb39cadb46?w=800"
-                  alt=""
-                />
+              <button type="button" data-full="./images/gallery2.jpg">
+                <img class="gallery-zoom" src="./images/gallery2.jpg" alt="" />
               </button>
-              <button
-                type="button"
-                data-full="https://images.zola.com/1787293e-0f3e-469c-be55-c52dd13b5ed4?w=1600"
-              >
-                <img
-                  src="https://images.zola.com/1787293e-0f3e-469c-be55-c52dd13b5ed4?w=800"
-                  alt=""
-                />
+              <button type="button" data-full="./images/gallery3.jpg">
+                <img class="gallery-top" src="./images/gallery3.jpg" alt="" />
               </button>
-              <button
-                type="button"
-                data-full="https://images.zola.com/c9745809-0c7d-4143-a064-a3a9610a74d9?w=1600"
-              >
-                <img
-                  src="https://images.zola.com/c9745809-0c7d-4143-a064-a3a9610a74d9?w=800"
-                  alt=""
-                />
-              </button>
-              <button
-                type="button"
-                data-full="https://images.zola.com/e8e663f9-e94b-4cf7-8432-b23cb5d124a4?w=1600"
-              >
-                <img
-                  src="https://images.zola.com/e8e663f9-e94b-4cf7-8432-b23cb5d124a4?w=800"
-                  alt=""
-                />
-              </button>
-              <button
-                type="button"
-                data-full="https://images.zola.com/4d47a172-8f95-46ce-addb-16b448c8cca6?w=1600"
-              >
-                <img
-                  src="https://images.zola.com/4d47a172-8f95-46ce-addb-16b448c8cca6?w=800"
-                  alt=""
-                />
-              </button>
-              <button
-                type="button"
-                data-full="https://images.zola.com/d17b5d05-ddff-4afc-aa6f-e7f5bedad42e?w=1600"
-              >
-                <img
-                  src="https://images.zola.com/d17b5d05-ddff-4afc-aa6f-e7f5bedad42e?w=800"
-                  alt=""
-                />
-              </button>
-              <button
-                type="button"
-                data-full="https://images.zola.com/6f582e02-937a-4dee-a140-ed65af0d9c53?w=1600"
-              >
-                <img
-                  src="https://images.zola.com/6f582e02-937a-4dee-a140-ed65af0d9c53?w=800"
-                  alt=""
-                />
-              </button>
-              <button
-                type="button"
-                data-full="https://images.zola.com/caa69165-a090-4299-816e-e7fdc7722b71?w=1600"
-              >
-                <img
-                  src="https://images.zola.com/caa69165-a090-4299-816e-e7fdc7722b71?w=800"
-                  alt=""
-                />
+              <button type="button" data-full="./images/gallery4.jpeg">
+                <img class="gallery-bottom" src="./images/gallery4.jpeg" alt="" />
               </button>
             </div>
           </div>
