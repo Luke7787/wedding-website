@@ -607,44 +607,83 @@
         color: var(--ink);
         font: inherit;
       }
-      .rsvp-events {
-        margin-top: 32px;
+      .rsvp-prompt {
+        margin: 0 0 12px;
       }
-      .rsvp-event {
-        padding: 20px 0;
-        border-top: 1px solid #d7d3ce;
-      }
-      .rsvp-event strong {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 1.05em;
-      }
-      .choices {
-        display: flex;
-        gap: 24px;
-        margin-top: 10px;
-      }
-      .guest-list {
-        margin-top: 8px;
-      }
-      .guest-row {
+      .rsvp-choice {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid #ece8e3;
+        margin: 0 0 24px;
       }
-      .guest-row:first-child {
-        margin-top: 0;
-        padding-top: 0;
-        border-top: none;
-      }
-      .guest-heading {
-        grid-column: 1 / -1;
+      .choice-btn {
+        position: relative;
+        display: block;
         margin: 0;
-        font-size: 14px;
+        padding: 16px 12px;
+        border: 1px solid var(--ink);
+        border-radius: 4px;
+        text-align: center;
         font-weight: 600;
+        cursor: pointer;
+      }
+      .choice-btn input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .choice-btn:has(input:checked) {
+        background: var(--ink);
+        color: var(--white);
+      }
+      .rsvp-party {
+        margin: 0 0 8px;
+        padding-top: 8px;
+        border-top: 1px solid #d7d3ce;
+      }
+      .rsvp-party strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.05em;
+      }
+      .rsvp-party p {
+        margin: 0 0 12px;
+      }
+      .guest-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 12px;
+      }
+      .guest-row input {
+        flex: 1;
+        min-width: 0;
+        padding: 12px 14px;
+        border: 1px solid var(--ink);
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+      }
+      .guest-remove {
+        flex-shrink: 0;
+        border: 0;
+        background: none;
+        padding: 8px;
+        color: var(--ink);
+        font: inherit;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .add-guest {
+        display: inline-block;
+        margin: 8px 0 16px;
+        border: 0;
+        background: none;
+        padding: 8px 0;
+        color: var(--ink);
+        font: inherit;
+        text-decoration: underline;
+        cursor: pointer;
       }
       .rsvp-thanks {
         display: none;
@@ -813,9 +852,6 @@
       @media (max-width: 479px) {
         .btn {
           width: 100%;
-        }
-        .guest-row {
-          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -1441,77 +1477,47 @@
           <div class="inner">
             <h1 class="page-title">RSVP</h1>
             <p class="page-intro">
-              Enter your first and last name to find your invitation.
+              Let us know if you can join us on Saturday, July 10, 2027.
             </p>
             <form class="rsvp-box" id="rsvp-form">
               <div class="field">
-                <label for="first-name">First name</label>
+                <label for="rsvp-name">Your name</label>
                 <input
-                  id="first-name"
-                  name="first"
-                  autocomplete="given-name"
+                  id="rsvp-name"
+                  name="name"
+                  autocomplete="name"
                   required
                 />
               </div>
-              <div class="field">
-                <label for="last-name">Last name</label>
-                <input
-                  id="last-name"
-                  name="last"
-                  autocomplete="family-name"
-                  required
-                />
-              </div>
-              <button class="btn" type="submit">Find</button>
-              <p class="rsvp-error" id="rsvp-error">
-                Please enter both your first and last name.
-              </p>
-
-              <div class="rsvp-events" id="rsvp-events" hidden>
-                <p id="rsvp-hello"></p>
-                <div class="rsvp-event">
-                  <strong>Wedding</strong>
-                  <div>Saturday, July 10, 2027</div>
-                  <p style="margin: 16px 0 0">Will you be able to join us?</p>
-                  <div class="choices">
-                    <label
-                      ><input type="radio" name="weekend" value="yes" checked />
-                      Attending</label
-                    >
-                    <label
-                      ><input type="radio" name="weekend" value="no" />
-                      Declining</label
-                    >
-                  </div>
-                </div>
-                <div class="rsvp-event" id="rsvp-party">
-                  <strong>Your party</strong>
-                  <p style="margin: 0 0 16px">
-                    Including yourself, how many people will be in your party?
-                    Please list each guest’s name and relation to you.
-                  </p>
-                  <div class="field">
-                    <label for="party-size">Total people in your party</label>
-                    <input
-                      id="party-size"
-                      name="partySize"
-                      type="number"
-                      min="1"
-                      max="12"
-                      value="1"
-                    />
-                  </div>
-                  <div class="guest-list" id="guest-list"></div>
-                </div>
-                <button
-                  class="btn"
-                  type="button"
-                  id="rsvp-submit"
-                  style="margin-top: 24px"
+              <p class="rsvp-prompt">Will you be able to join us?</p>
+              <div
+                class="rsvp-choice"
+                role="radiogroup"
+                aria-label="Will you attend"
+              >
+                <label class="choice-btn"
+                  ><input type="radio" name="weekend" value="yes" checked />
+                  Attending</label
                 >
-                  Submit RSVP
+                <label class="choice-btn"
+                  ><input type="radio" name="weekend" value="no" />
+                  Declining</label
+                >
+              </div>
+              <div class="rsvp-party" id="rsvp-party">
+                <strong>Anyone else?</strong>
+                <p>Add each person coming with you.</p>
+                <div class="guest-list" id="guest-list"></div>
+                <button class="add-guest" type="button" id="add-guest">
+                  Add guest
                 </button>
               </div>
+              <p class="rsvp-error" id="rsvp-error">
+                Please enter your name.
+              </p>
+              <button class="btn" type="submit" id="rsvp-submit">
+                Submit RSVP
+              </button>
               <div class="rsvp-thanks" id="rsvp-thanks">
                 Thank you — your RSVP has been saved.
               </div>
@@ -1614,13 +1620,13 @@
       });
 
       const rsvpForm = document.getElementById("rsvp-form");
-      const rsvpEvents = document.getElementById("rsvp-events");
       const rsvpError = document.getElementById("rsvp-error");
       const rsvpThanks = document.getElementById("rsvp-thanks");
       const rsvpParty = document.getElementById("rsvp-party");
-      const partySizeInput = document.getElementById("party-size");
       const guestList = document.getElementById("guest-list");
-      let lookupName = "";
+      const addGuest = document.getElementById("add-guest");
+      const rsvpSubmit = document.getElementById("rsvp-submit");
+      const MAX_PARTY = 12;
 
       function isAttending() {
         return (
@@ -1629,128 +1635,88 @@
         );
       }
 
-      function collectGuests() {
-        return [...guestList.querySelectorAll(".guest-row")].map((row) => ({
-          name: row.querySelector('[name="guest-name"]').value,
-          relation: row.querySelector('[name="guest-relation"]').value,
-        }));
+      function collectExtraGuests() {
+        return [...guestList.querySelectorAll('[name="guest-name"]')].map(
+          (input) => input.value.trim(),
+        );
       }
 
-      function renderGuests(count) {
-        const previous = collectGuests();
-        guestList.replaceChildren();
-        for (let i = 0; i < count; i += 1) {
-          const row = document.createElement("div");
-          row.className = "guest-row";
-          const heading = document.createElement("p");
-          heading.className = "guest-heading";
-          heading.textContent = "Guest " + (i + 1);
-          const nameField = document.createElement("div");
-          nameField.className = "field";
-          nameField.innerHTML =
-            '<label>Full name</label><input name="guest-name" autocomplete="name" required />';
-          const relationField = document.createElement("div");
-          relationField.className = "field";
-          relationField.innerHTML =
-            '<label>Relation</label><input name="guest-relation" placeholder="Spouse, child, plus-one…" required />';
-          const nameInput = nameField.querySelector("input");
-          const relationInput = relationField.querySelector("input");
-          if (previous[i]) {
-            nameInput.value = previous[i].name;
-            relationInput.value = previous[i].relation;
-          } else if (i === 0 && lookupName) {
-            nameInput.value = lookupName;
-            relationInput.value = "Self";
-          }
-          row.append(heading, nameField, relationField);
-          guestList.append(row);
-        }
+      function extraGuestCount() {
+        return guestList.querySelectorAll(".guest-row").length;
+      }
+
+      function syncAddGuest() {
+        addGuest.hidden = extraGuestCount() >= MAX_PARTY - 1;
+      }
+
+      function addGuestRow(name) {
+        if (extraGuestCount() >= MAX_PARTY - 1) return;
+        const row = document.createElement("div");
+        row.className = "guest-row";
+        const input = document.createElement("input");
+        input.name = "guest-name";
+        input.autocomplete = "name";
+        input.placeholder = "Guest name";
+        input.required = isAttending();
+        input.value = name || "";
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "guest-remove";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => {
+          row.remove();
+          syncAddGuest();
+        });
+        row.append(input, remove);
+        guestList.append(row);
+        syncAddGuest();
+        input.focus();
       }
 
       function syncPartyFields() {
         const attending = isAttending();
         rsvpParty.hidden = !attending;
-        partySizeInput.required = attending;
         guestList.querySelectorAll("input").forEach((input) => {
           input.required = attending;
         });
       }
 
-      rsvpForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const first = document.getElementById("first-name").value.trim();
-        const last = document.getElementById("last-name").value.trim();
-        rsvpThanks.classList.remove("is-visible");
-        if (!first || !last) {
-          rsvpError.classList.add("is-visible");
-          rsvpEvents.hidden = true;
-          return;
-        }
-        rsvpError.classList.remove("is-visible");
-        lookupName = first + " " + last;
-        document.getElementById("rsvp-hello").textContent =
-          "Hi " + lookupName + " — we found your invitation.";
-        partySizeInput.value = "1";
-        renderGuests(1);
-        syncPartyFields();
-        rsvpEvents.hidden = false;
-      });
       document.querySelectorAll('input[name="weekend"]').forEach((input) => {
         input.addEventListener("change", syncPartyFields);
       });
-      function parsedPartySize() {
-        const parsed = Number.parseInt(partySizeInput.value, 10);
-        if (!Number.isFinite(parsed) || parsed < 1) return null;
-        return Math.min(12, parsed);
-      }
+      addGuest.addEventListener("click", () => addGuestRow(""));
+      syncPartyFields();
+      syncAddGuest();
 
-      partySizeInput.addEventListener("input", () => {
-        const count = parsedPartySize();
-        if (count == null) return;
-        renderGuests(count);
-        syncPartyFields();
-      });
-      partySizeInput.addEventListener("blur", () => {
-        const count = parsedPartySize() ?? 1;
-        partySizeInput.value = String(count);
-        renderGuests(count);
-        syncPartyFields();
-      });
-      const rsvpSubmit = document.getElementById("rsvp-submit");
-      rsvpSubmit.addEventListener("click", async () => {
-        const first = document.getElementById("first-name").value.trim();
-        const last = document.getElementById("last-name").value.trim();
+      rsvpForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const name = document.getElementById("rsvp-name").value.trim();
         const attending = isAttending();
-        const guests = attending
-          ? collectGuests().map((guest) => ({
-              name: guest.name.trim(),
-              relation: guest.relation.trim(),
-            }))
-          : [];
-        if (attending) {
-          const incomplete = guests.some(
-            (guest) => !guest.name || !guest.relation,
-          );
-          if (incomplete) {
-            rsvpError.textContent =
-              "Please enter a name and relation for each person in your party.";
-            rsvpError.classList.add("is-visible");
-            rsvpThanks.classList.remove("is-visible");
-            return;
-          }
+        const extras = attending ? collectExtraGuests() : [];
+        rsvpThanks.classList.remove("is-visible");
+        if (!name) {
+          rsvpError.textContent = "Please enter your name.";
+          rsvpError.classList.add("is-visible");
+          return;
+        }
+        if (attending && extras.some((guest) => !guest)) {
+          rsvpError.textContent =
+            "Please enter a name for each guest, or remove the empty row.";
+          rsvpError.classList.add("is-visible");
+          return;
         }
         rsvpError.classList.remove("is-visible");
-        rsvpError.textContent = "Please enter both your first and last name.";
-        rsvpThanks.classList.remove("is-visible");
         rsvpSubmit.disabled = true;
         rsvpSubmit.textContent = "Saving…";
+        const guests = attending
+          ? [name, ...extras].map((guestName) => ({ name: guestName }))
+          : [];
         try {
           const response = await fetch("/api/rsvp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              firstName: first,
-              lastName: last,
+              name,
               attending,
               guests,
             }),

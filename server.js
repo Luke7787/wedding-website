@@ -37,6 +37,13 @@ function cleanText(value, max) {
   return value.replace(/\s+/g, " ").trim().slice(0, max);
 }
 
+function splitName(fullName) {
+  const parts = fullName.split(" ").filter(Boolean);
+  const firstName = parts[0] || "";
+  const lastName = parts.slice(1).join(" ");
+  return { firstName, lastName: lastName || firstName };
+}
+
 let collectionPromise;
 
 async function rsvpsCollection() {
@@ -63,34 +70,41 @@ app.post("/api/rsvp", async (req, res) => {
     return res.status(429).json({ error: "Please wait and try again." });
   }
 
-  const firstName = cleanText(req.body?.firstName, 80);
-  const lastName = cleanText(req.body?.lastName, 80);
+  const fullName = cleanText(req.body?.name, 120);
+  const split = splitName(fullName);
+  const firstName = cleanText(req.body?.firstName, 80) || split.firstName;
+  const lastName = cleanText(req.body?.lastName, 80) || split.lastName;
   const attending = req.body?.attending === true;
   const rawGuests = Array.isArray(req.body?.guests) ? req.body.guests : [];
 
   if (!firstName || !lastName) {
-    return res.status(400).json({ error: "First and last name are required." });
+    return res.status(400).json({ error: "Your name is required." });
   }
+
+  const displayName =
+    fullName ||
+    (firstName === lastName ? firstName : firstName + " " + lastName);
 
   let guests = [];
   let partySize = 0;
   if (attending) {
     guests = rawGuests
       .slice(0, 12)
-      .map((guest) => ({
-        name: cleanText(guest?.name, 80),
-        relation: cleanText(guest?.relation, 80),
-      }))
-      .filter((guest) => guest.name && guest.relation);
+      .map((guest) => {
+        if (typeof guest === "string") {
+          return { name: cleanText(guest, 80) };
+        }
+        return { name: cleanText(guest?.name, 80) };
+      })
+      .filter((guest) => guest.name);
     if (!guests.length) {
-      return res
-        .status(400)
-        .json({ error: "Please enter a name and relation for each guest." });
+      guests = [{ name: displayName }];
     }
     partySize = guests.length;
   }
 
   const doc = {
+    name: displayName,
     firstName,
     lastName,
     firstNameLower: firstName.toLowerCase(),

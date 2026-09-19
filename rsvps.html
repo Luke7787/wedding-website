@@ -118,9 +118,7 @@
             const article = document.createElement("article");
             const title = document.createElement("strong");
             title.textContent =
-              rsvp.firstName +
-              " " +
-              rsvp.lastName +
+              (rsvp.name || rsvp.firstName + " " + rsvp.lastName) +
               " — " +
               (rsvp.attending ? "Attending" : "Declining");
             const meta = document.createElement("div");
@@ -132,7 +130,9 @@
               const guests = document.createElement("ul");
               rsvp.guests.forEach((guest) => {
                 const item = document.createElement("li");
-                item.textContent = guest.name + " (" + guest.relation + ")";
+                item.textContent = guest.relation
+                  ? guest.name + " (" + guest.relation + ")"
+                  : guest.name;
                 guests.append(item);
               });
               article.append(guests);
