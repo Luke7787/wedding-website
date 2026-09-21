@@ -219,21 +219,14 @@
         display: flex;
         height: 100%;
         width: max-content;
-        animation: marquee 48s linear infinite;
+        will-change: transform;
       }
       .marquee-track img {
         height: 100%;
-        width: auto;
-        min-width: 50vw;
+        width: 50vw;
+        flex-shrink: 0;
         object-fit: cover;
-      }
-      @keyframes marquee {
-        from {
-          transform: translateX(0);
-        }
-        to {
-          transform: translateX(-50%);
-        }
+        object-position: center;
       }
 
       .content {
@@ -801,7 +794,7 @@
           aspect-ratio: 1 / 1;
         }
         .marquee-track img {
-          min-width: 100vw;
+          width: 100vw;
         }
         .names {
           padding: 40px 0;
@@ -954,11 +947,6 @@
                 <img src="./images/carousel-1.jpg" alt="" />
                 <img src="./images/carousel-2.jpg" alt="" />
                 <img src="./images/carousel-3.jpg" alt="" />
-                <img src="./images/carousel-1.jpg" alt="" />
-                <img src="./images/carousel-2.jpg" alt="" />
-                <img src="./images/carousel-3.jpg" alt="" />
-                <img src="./images/carousel-1.jpg" alt="" />
-                <img src="./images/carousel-2.jpg" alt="" />
               </div>
             </div>
           </div>
@@ -1560,6 +1548,71 @@
       const lightbox = document.getElementById("lightbox");
       const lightboxImg = lightbox.querySelector("img");
 
+      const marqueeTrack = document.querySelector(".marquee-track");
+      const marqueeOriginals = marqueeTrack
+        ? [...marqueeTrack.querySelectorAll("img")]
+        : [];
+      const MARQUEE_OLD_DURATION = 48;
+      let marqueeCloned = false;
+      let marqueeOffset = 0;
+      let marqueeLoopWidth = 0;
+      let marqueePxPerSecond = 0;
+      let marqueeLastTime = 0;
+      let marqueeRaf = 0;
+
+      function layoutHomeMarquee() {
+        if (!marqueeTrack || marqueeOriginals.length < 3) return;
+        if (!marqueeCloned) {
+          marqueeOriginals.forEach((img) => {
+            const clone = img.cloneNode(true);
+            clone.setAttribute("aria-hidden", "true");
+            marqueeTrack.appendChild(clone);
+          });
+          marqueeCloned = true;
+        }
+        const firstClone = marqueeTrack.children[marqueeOriginals.length];
+        const nextLoopWidth = firstClone ? firstClone.offsetLeft : 0;
+        if (nextLoopWidth <= 0) return;
+        if (marqueeLoopWidth > 0) {
+          marqueeOffset = (marqueeOffset / marqueeLoopWidth) * nextLoopWidth;
+        }
+        marqueeLoopWidth = nextLoopWidth;
+        marqueePxPerSecond =
+          (nextLoopWidth + marqueeOriginals[0].offsetWidth) /
+          MARQUEE_OLD_DURATION;
+      }
+
+      function tickMarquee(now) {
+        if (!marqueeLastTime) marqueeLastTime = now;
+        const dt = Math.min((now - marqueeLastTime) / 1000, 0.05);
+        marqueeLastTime = now;
+        if (marqueeLoopWidth > 0 && marqueePxPerSecond > 0) {
+          marqueeOffset =
+            (marqueeOffset + marqueePxPerSecond * dt) % marqueeLoopWidth;
+          marqueeTrack.style.transform = `translateX(${-marqueeOffset}px)`;
+        }
+        marqueeRaf = requestAnimationFrame(tickMarquee);
+      }
+
+      function startHomeMarquee() {
+        if (!marqueeTrack) return;
+        const ready = marqueeOriginals.map((img) =>
+          img.complete
+            ? Promise.resolve()
+            : new Promise((resolve) => {
+                img.addEventListener("load", resolve, { once: true });
+                img.addEventListener("error", resolve, { once: true });
+              })
+        );
+        Promise.all(ready).then(() => {
+          layoutHomeMarquee();
+          if (!marqueeRaf) {
+            marqueeLastTime = 0;
+            marqueeRaf = requestAnimationFrame(tickMarquee);
+          }
+        });
+      }
+
       function openMenu() {
         overlay.hidden = false;
         drawer.hidden = false;
@@ -1592,6 +1645,9 @@
             : document.querySelector(`[data-page="${id}"] .page-title`)
                 ?.textContent + " | Luke & Gizelle";
         window.scrollTo(0, 0);
+        if (id === "home") {
+          layoutHomeMarquee();
+        }
       }
 
       function syncFromHash() {
@@ -1606,6 +1662,9 @@
       });
       window.addEventListener("hashchange", syncFromHash);
       syncFromHash();
+
+      window.addEventListener("resize", layoutHomeMarquee);
+      startHomeMarquee();
 
       document.querySelectorAll(".gallery-grid button").forEach((button) => {
         button.addEventListener("click", () => {
