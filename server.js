@@ -6,7 +6,7 @@ require("dotenv").config();
 const PORT = Number(process.env.PORT) || 8787;
 const MONGODB_URI = process.env.MONGODB_URI || "";
 const ADMIN_KEY = process.env.ADMIN_KEY || "";
-const EVENT_DATE = "Saturday, July 10, 2027";
+const EVENT_DATE = "Saturday, June 19th, 2027";
 
 const app = express();
 app.disable("x-powered-by");
@@ -22,7 +22,9 @@ function rateLimited(ip) {
   const now = Date.now();
   const windowMs = 60 * 60 * 1000;
   const max = 40;
-  const current = (hitsByIp.get(ip) || []).filter((time) => now - time < windowMs);
+  const current = (hitsByIp.get(ip) || []).filter(
+    (time) => now - time < windowMs,
+  );
   if (current.length >= max) {
     hitsByIp.set(ip, current);
     return true;
