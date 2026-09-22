@@ -516,13 +516,16 @@
       }
       .gallery-grid img.gallery-zoom {
         transform: scale(1.45);
-        object-position: 50% 40%;
+        object-position: 50% 78%;
       }
       .gallery-grid img.gallery-top {
         object-position: 50% 26%;
       }
       .gallery-grid img.gallery-bottom {
         object-position: 50% 68%;
+      }
+      .gallery-grid img.gallery-nudge-down {
+        object-position: 50% 62%;
       }
 
       .registry-grid {
@@ -1249,7 +1252,11 @@
             <p class="page-intro">A few snaps taken of us over the years...</p>
             <div class="gallery-grid">
               <button type="button" data-full="./images/gallery8.jpeg">
-                <img src="./images/gallery8.jpeg" alt="" />
+                <img
+                  class="gallery-nudge-down"
+                  src="./images/gallery8.jpeg"
+                  alt=""
+                />
               </button>
               <button type="button" data-full="./images/gallery6.jpg">
                 <img src="./images/gallery6.jpg" alt="" />
@@ -1257,14 +1264,14 @@
               <button type="button" data-full="./images/gallery9.png">
                 <img src="./images/gallery9.png" alt="" />
               </button>
+              <button type="button" data-full="./images/gallery3.jpg">
+                <img class="gallery-top" src="./images/gallery3.jpg" alt="" />
+              </button>
               <button type="button" data-full="./images/gallery1.jpg">
                 <img src="./images/gallery1.jpg" alt="" />
               </button>
               <button type="button" data-full="./images/gallery2.jpg">
                 <img class="gallery-zoom" src="./images/gallery2.jpg" alt="" />
-              </button>
-              <button type="button" data-full="./images/gallery3.jpg">
-                <img class="gallery-top" src="./images/gallery3.jpg" alt="" />
               </button>
               <button type="button" data-full="./images/gallery4.jpeg">
                 <img
