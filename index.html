@@ -644,6 +644,14 @@
         background: var(--ink);
         color: var(--white);
       }
+      .party-count {
+        margin: 0 0 16px;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .party-count[hidden] {
+        display: none;
+      }
       .rsvp-party {
         margin: 0 0 8px;
         padding-top: 8px;
@@ -1494,6 +1502,7 @@
               Let us know if you can join us on Saturday, June 19th, 2027.
             </p>
             <form class="rsvp-box" id="rsvp-form">
+              <p class="party-count" id="party-count">Party of 1</p>
               <div class="field">
                 <label for="rsvp-name">Your name</label>
                 <input
@@ -1706,6 +1715,7 @@
       const rsvpError = document.getElementById("rsvp-error");
       const rsvpThanks = document.getElementById("rsvp-thanks");
       const rsvpParty = document.getElementById("rsvp-party");
+      const partyCount = document.getElementById("party-count");
       const guestList = document.getElementById("guest-list");
       const addGuest = document.getElementById("add-guest");
       const rsvpSubmit = document.getElementById("rsvp-submit");
@@ -1732,6 +1742,11 @@
         addGuest.hidden = extraGuestCount() >= MAX_PARTY - 1;
       }
 
+      function syncPartyCount() {
+        const count = 1 + extraGuestCount();
+        partyCount.textContent = "Party of " + count;
+      }
+
       function addGuestRow(name) {
         if (extraGuestCount() >= MAX_PARTY - 1) return;
         const row = document.createElement("div");
@@ -1749,16 +1764,19 @@
         remove.addEventListener("click", () => {
           row.remove();
           syncAddGuest();
+          syncPartyCount();
         });
         row.append(input, remove);
         guestList.append(row);
         syncAddGuest();
+        syncPartyCount();
         input.focus();
       }
 
       function syncPartyFields() {
         const attending = isAttending();
         rsvpParty.hidden = !attending;
+        partyCount.hidden = !attending;
         guestList.querySelectorAll("input").forEach((input) => {
           input.required = attending;
         });
@@ -1769,6 +1787,7 @@
         guestList.replaceChildren();
         syncPartyFields();
         syncAddGuest();
+        syncPartyCount();
       }
 
       document.querySelectorAll('input[name="weekend"]').forEach((input) => {
@@ -1777,6 +1796,7 @@
       addGuest.addEventListener("click", () => addGuestRow(""));
       syncPartyFields();
       syncAddGuest();
+      syncPartyCount();
 
       rsvpForm.addEventListener("submit", async (event) => {
         event.preventDefault();
