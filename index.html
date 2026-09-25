@@ -669,37 +669,13 @@
         display: none;
       }
       .rsvp-party {
-        margin: 0 0 8px;
-        padding-top: 8px;
+        margin: 0 0 20px;
+        padding: 8px 0 20px;
         border-top: 1px solid #d7d3ce;
-      }
-      .party-toggle {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        margin: 0;
-        padding: 8px 0 0;
-        border: 0;
-        background: none;
-        color: inherit;
-        font: inherit;
-        font-weight: 700;
-        text-align: left;
-        cursor: pointer;
-      }
-      .party-toggle:hover {
-        color: #3a3a3a;
-      }
-      .party-arrow {
-        font-size: 0.8em;
-        line-height: 1;
-      }
-      .party-extra[hidden] {
-        display: none;
+        border-bottom: 1px solid #d7d3ce;
       }
       .rsvp-party p {
-        margin: 0 0 12px;
+        margin: 12px 0 0;
       }
       .guest-row {
         display: flex;
@@ -754,7 +730,7 @@
         gap: 8px;
         width: 100%;
         height: 48px;
-        margin: 12px 0 16px;
+        margin: 12px 0 0;
         padding: 0 12px;
         border: 1px solid var(--ink);
         border-radius: 4px;
@@ -785,6 +761,57 @@
       }
       .rsvp-thanks.is-visible {
         display: block;
+      }
+      .confirm {
+        position: fixed;
+        inset: 0;
+        z-index: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(78, 78, 78, 0.45);
+      }
+      .confirm[hidden] {
+        display: none;
+      }
+      .confirm-card {
+        width: min(420px, 100%);
+        padding: 28px 24px;
+        border-radius: 12px;
+        background: var(--bg);
+        color: var(--ink);
+        text-align: center;
+      }
+      .confirm-card h2 {
+        margin: 0 0 12px;
+        font-size: 22px;
+        font-weight: 400;
+      }
+      .confirm-card p {
+        margin: 0 0 24px;
+      }
+      .confirm-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .confirm-actions .btn {
+        width: 100%;
+        height: 48px;
+        padding: 0 12px;
+        line-height: 1;
+      }
+      .confirm-actions .btn:disabled {
+        opacity: 0.65;
+        cursor: wait;
+      }
+      .confirm-actions .btn.ghost:hover:not(:disabled) {
+        background: #eceae6;
+        color: var(--ink);
+      }
+      .confirm-actions .btn:hover:not(:disabled):not(.ghost) {
+        background: #3a3a3a;
       }
       .rsvp-error {
         color: #8a2a2a;
@@ -1603,22 +1630,11 @@
                 >
               </div>
               <div class="rsvp-party" id="rsvp-party">
-                <button
-                  class="party-toggle"
-                  type="button"
-                  id="party-toggle"
-                  aria-expanded="false"
-                  aria-controls="party-extra"
-                >
-                  <span class="party-label">Anyone else?</span>
-                  <span class="party-arrow" aria-hidden="true">▼</span>
+                <p>Add each person coming with you.</p>
+                <div class="guest-list" id="guest-list"></div>
+                <button class="add-guest" type="button" id="add-guest">
+                  Add guest
                 </button>
-                <div class="party-extra" id="party-extra" hidden>
-                  <div class="guest-list" id="guest-list"></div>
-                  <button class="add-guest" type="button" id="add-guest">
-                    Add guest
-                  </button>
-                </div>
               </div>
               <p class="rsvp-error" id="rsvp-error">Please enter your name.</p>
               <button class="btn" type="submit" id="rsvp-submit">
@@ -1636,6 +1652,24 @@
         <div class="footer-mark">Luke &amp; Gizelle</div>
         <span class="footer-tagline">For all the days along the way</span>
       </footer>
+    </div>
+
+    <div class="confirm" id="rsvp-confirm" hidden>
+      <div
+        class="confirm-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+      >
+        <h2 id="confirm-title">Confirm your RSVP</h2>
+        <p id="confirm-summary"></p>
+        <div class="confirm-actions">
+          <button class="btn ghost" type="button" id="confirm-back">
+            Go back
+          </button>
+          <button class="btn" type="button" id="confirm-send">Confirm</button>
+        </div>
+      </div>
     </div>
 
     <div
@@ -1801,14 +1835,14 @@
       const rsvpError = document.getElementById("rsvp-error");
       const rsvpThanks = document.getElementById("rsvp-thanks");
       const rsvpParty = document.getElementById("rsvp-party");
-      const partyToggle = document.getElementById("party-toggle");
-      const partyExtra = document.getElementById("party-extra");
-      const partyArrow = partyToggle.querySelector(".party-arrow");
-      const partyLabel = partyToggle.querySelector(".party-label");
       const partyCount = document.getElementById("party-count");
       const guestList = document.getElementById("guest-list");
       const addGuest = document.getElementById("add-guest");
       const rsvpSubmit = document.getElementById("rsvp-submit");
+      const rsvpConfirm = document.getElementById("rsvp-confirm");
+      const confirmSummary = document.getElementById("confirm-summary");
+      const confirmBack = document.getElementById("confirm-back");
+      const confirmSend = document.getElementById("confirm-send");
       const MAX_PARTY = 12;
 
       function isAttending() {
@@ -1844,15 +1878,6 @@
         guestList.querySelectorAll(".guest-row").forEach((row, index) => {
           row.querySelector(".guest-num").textContent = index + 1 + ")";
         });
-      }
-
-      function setPartyOpen(open) {
-        partyExtra.hidden = !open;
-        partyToggle.setAttribute("aria-expanded", String(open));
-        partyArrow.textContent = open ? "▲" : "▼";
-        partyLabel.textContent = open
-          ? "Add each person coming with you."
-          : "Anyone else?";
       }
 
       function addGuestRow(name) {
@@ -1900,7 +1925,6 @@
       function resetRsvpForm() {
         rsvpForm.reset();
         guestList.replaceChildren();
-        setPartyOpen(false);
         syncPartyFields();
         syncAddGuest();
         syncPartyCount();
@@ -1910,34 +1934,45 @@
         input.addEventListener("change", syncPartyFields);
       });
       addGuest.addEventListener("click", () => addGuestRow(""));
-      partyToggle.addEventListener("click", () => {
-        setPartyOpen(partyExtra.hidden);
-      });
-      setPartyOpen(false);
       syncPartyFields();
       syncAddGuest();
       syncPartyCount();
 
-      rsvpForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const name = document.getElementById("rsvp-name").value.trim();
-        const attending = isAttending();
-        const extras = attending ? collectExtraGuests() : [];
-        rsvpThanks.classList.remove("is-visible");
-        if (!name) {
-          rsvpError.textContent = "Please enter your name.";
-          rsvpError.classList.add("is-visible");
-          return;
-        }
-        if (attending && extras.some((guest) => !guest)) {
-          rsvpError.textContent =
-            "Please enter a name for each guest, or remove the empty row.";
-          rsvpError.classList.add("is-visible");
-          return;
-        }
-        rsvpError.classList.remove("is-visible");
-        rsvpSubmit.disabled = true;
-        rsvpSubmit.textContent = "Saving…";
+      function partySentence(name, extras) {
+        const people = [name, ...extras];
+        if (people.length === 1) return name;
+        if (people.length === 2) return people.join(" and ");
+        return (
+          people.slice(0, -1).join(", ") + ", and " + people[people.length - 1]
+        );
+      }
+
+      function openConfirm(name, attending, extras) {
+        confirmSummary.textContent = attending
+          ? extras.length
+            ? "Please confirm that you, " +
+              partySentence(name, extras) +
+              " will be attending."
+            : "Please confirm that you, " + name + ", will be attending."
+          : "Please confirm that you, " +
+            name +
+            ", won't be able to attend.";
+        confirmSend.disabled = false;
+        confirmBack.disabled = false;
+        confirmSend.textContent = "Confirm";
+        rsvpConfirm.hidden = false;
+        confirmSend.focus();
+      }
+
+      function closeConfirm() {
+        rsvpConfirm.hidden = true;
+        rsvpSubmit.focus();
+      }
+
+      async function saveRsvp(name, attending, extras) {
+        confirmSend.disabled = true;
+        confirmBack.disabled = true;
+        confirmSend.textContent = "Saving…";
         const guests = attending
           ? [name, ...extras].map((guestName) => ({ name: guestName }))
           : [];
@@ -1955,17 +1990,54 @@
           if (!response.ok) {
             throw new Error(data.error || "Could not save your RSVP.");
           }
+          closeConfirm();
           resetRsvpForm();
           rsvpThanks.classList.add("is-visible");
         } catch (error) {
+          closeConfirm();
           rsvpError.textContent =
             error.message ||
             "Could not save your RSVP. Please try again in a moment.";
           rsvpError.classList.add("is-visible");
         } finally {
-          rsvpSubmit.disabled = false;
-          rsvpSubmit.textContent = "Submit RSVP";
+          confirmSend.disabled = false;
+          confirmBack.disabled = false;
+          confirmSend.textContent = "Confirm";
         }
+      }
+
+      rsvpForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = document.getElementById("rsvp-name").value.trim();
+        const attending = isAttending();
+        const extras = attending ? collectExtraGuests() : [];
+        rsvpThanks.classList.remove("is-visible");
+        if (!name) {
+          rsvpError.textContent = "Please enter your name.";
+          rsvpError.classList.add("is-visible");
+          return;
+        }
+        if (attending && extras.some((guest) => !guest)) {
+          rsvpError.textContent =
+            "Please enter a name for each guest, or remove the empty row.";
+          rsvpError.classList.add("is-visible");
+          return;
+        }
+        rsvpError.classList.remove("is-visible");
+        openConfirm(name, attending, extras);
+      });
+      confirmBack.addEventListener("click", closeConfirm);
+      confirmSend.addEventListener("click", () => {
+        const name = document.getElementById("rsvp-name").value.trim();
+        const attending = isAttending();
+        const extras = attending ? collectExtraGuests() : [];
+        saveRsvp(name, attending, extras);
+      });
+      rsvpConfirm.addEventListener("click", (event) => {
+        if (event.target === rsvpConfirm) closeConfirm();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !rsvpConfirm.hidden) closeConfirm();
       });
     </script>
   </body>

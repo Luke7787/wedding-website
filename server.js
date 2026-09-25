@@ -62,7 +62,10 @@ async function rsvpsCollection() {
         { unique: true },
       );
       return collection;
-    })();
+    })().catch((error) => {
+      collectionPromise = null;
+      throw error;
+    });
   }
   return collectionPromise;
 }
