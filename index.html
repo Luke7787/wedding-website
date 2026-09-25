@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Luke Zhuang and Gizelle Mincitar's Wedding Website</title>
+    <title>Luke &amp; Gizelle’s Wedding</title>
+    <link rel="icon" href="data:," />
     <meta
       name="description"
       content="The wedding website of Luke Zhuang and Gizelle Mincitar"
@@ -1727,9 +1728,10 @@
         });
         document.title =
           id === "home"
-            ? "Luke Zhuang and Gizelle Mincitar's Wedding Website"
-            : document.querySelector(`[data-page="${id}"] .page-title`)
-                ?.textContent + " | Luke & Gizelle";
+            ? "Luke & Gizelle’s Wedding"
+            : "Luke & Gizelle | " +
+              document.querySelector(`[data-page="${id}"] .page-title`)
+                ?.textContent;
         window.scrollTo(0, 0);
         if (id === "home") {
           layoutHomeMarquee();
