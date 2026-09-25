@@ -1764,6 +1764,13 @@
         });
       }
 
+      function resetRsvpForm() {
+        rsvpForm.reset();
+        guestList.replaceChildren();
+        syncPartyFields();
+        syncAddGuest();
+      }
+
       document.querySelectorAll('input[name="weekend"]').forEach((input) => {
         input.addEventListener("change", syncPartyFields);
       });
@@ -1808,6 +1815,7 @@
           if (!response.ok) {
             throw new Error(data.error || "Could not save your RSVP.");
           }
+          resetRsvpForm();
           rsvpThanks.classList.add("is-visible");
         } catch (error) {
           rsvpError.textContent =
