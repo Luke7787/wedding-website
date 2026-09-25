@@ -640,9 +640,24 @@
         opacity: 0;
         pointer-events: none;
       }
+      .choice-btn,
+      .rsvp-box .btn,
+      .rsvp-wrap .btn {
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+      }
+      .choice-btn:hover {
+        background: #eceae6;
+      }
       .choice-btn:has(input:checked) {
         background: var(--ink);
         color: var(--white);
+      }
+      .choice-btn:has(input:checked):hover,
+      .rsvp-box .btn:hover:not(:disabled),
+      .rsvp-wrap .btn:hover {
+        background: #3a3a3a;
       }
       .party-count {
         margin: 0 0 16px;
@@ -657,10 +672,30 @@
         padding-top: 8px;
         border-top: 1px solid #d7d3ce;
       }
-      .rsvp-party strong {
-        display: block;
-        margin-bottom: 8px;
-        font-size: 1.05em;
+      .party-toggle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin: 0;
+        padding: 8px 0 0;
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+        font-weight: 700;
+        text-align: left;
+        cursor: pointer;
+      }
+      .party-toggle:hover {
+        color: #3a3a3a;
+      }
+      .party-arrow {
+        font-size: 0.8em;
+        line-height: 1;
+      }
+      .party-extra[hidden] {
+        display: none;
       }
       .rsvp-party p {
         margin: 0 0 12px;
@@ -670,6 +705,12 @@
         gap: 8px;
         align-items: center;
         margin-top: 12px;
+      }
+      .guest-num {
+        flex-shrink: 0;
+        width: 1.25em;
+        text-align: left;
+        font-variant-numeric: tabular-nums;
       }
       .guest-row input {
         flex: 1;
@@ -1528,12 +1569,23 @@
                 >
               </div>
               <div class="rsvp-party" id="rsvp-party">
-                <strong>Anyone else?</strong>
-                <p>Add each person coming with you.</p>
-                <div class="guest-list" id="guest-list"></div>
-                <button class="add-guest" type="button" id="add-guest">
-                  Add guest
+                <button
+                  class="party-toggle"
+                  type="button"
+                  id="party-toggle"
+                  aria-expanded="false"
+                  aria-controls="party-extra"
+                >
+                  <span>Anyone else?</span>
+                  <span class="party-arrow" aria-hidden="true">▼</span>
                 </button>
+                <div class="party-extra" id="party-extra" hidden>
+                  <p>Add each person coming with you.</p>
+                  <div class="guest-list" id="guest-list"></div>
+                  <button class="add-guest" type="button" id="add-guest">
+                    Add guest
+                  </button>
+                </div>
               </div>
               <p class="rsvp-error" id="rsvp-error">Please enter your name.</p>
               <button class="btn" type="submit" id="rsvp-submit">
@@ -1715,6 +1767,9 @@
       const rsvpError = document.getElementById("rsvp-error");
       const rsvpThanks = document.getElementById("rsvp-thanks");
       const rsvpParty = document.getElementById("rsvp-party");
+      const partyToggle = document.getElementById("party-toggle");
+      const partyExtra = document.getElementById("party-extra");
+      const partyArrow = partyToggle.querySelector(".party-arrow");
       const partyCount = document.getElementById("party-count");
       const guestList = document.getElementById("guest-list");
       const addGuest = document.getElementById("add-guest");
@@ -1747,10 +1802,25 @@
         partyCount.textContent = "Party of " + count;
       }
 
+      function syncGuestNumbers() {
+        guestList.querySelectorAll(".guest-row").forEach((row, index) => {
+          row.querySelector(".guest-num").textContent = String(index + 1);
+        });
+      }
+
+      function setPartyOpen(open) {
+        partyExtra.hidden = !open;
+        partyToggle.setAttribute("aria-expanded", String(open));
+        partyArrow.textContent = open ? "▲" : "▼";
+      }
+
       function addGuestRow(name) {
         if (extraGuestCount() >= MAX_PARTY - 1) return;
         const row = document.createElement("div");
         row.className = "guest-row";
+        const number = document.createElement("span");
+        number.className = "guest-num";
+        number.setAttribute("aria-hidden", "true");
         const input = document.createElement("input");
         input.name = "guest-name";
         input.autocomplete = "name";
@@ -1763,11 +1833,13 @@
         remove.textContent = "Remove";
         remove.addEventListener("click", () => {
           row.remove();
+          syncGuestNumbers();
           syncAddGuest();
           syncPartyCount();
         });
-        row.append(input, remove);
+        row.append(number, input, remove);
         guestList.append(row);
+        syncGuestNumbers();
         syncAddGuest();
         syncPartyCount();
         input.focus();
@@ -1785,6 +1857,7 @@
       function resetRsvpForm() {
         rsvpForm.reset();
         guestList.replaceChildren();
+        setPartyOpen(false);
         syncPartyFields();
         syncAddGuest();
         syncPartyCount();
@@ -1794,6 +1867,10 @@
         input.addEventListener("change", syncPartyFields);
       });
       addGuest.addEventListener("click", () => addGuestRow(""));
+      partyToggle.addEventListener("click", () => {
+        setPartyOpen(partyExtra.hidden);
+      });
+      setPartyOpen(false);
       syncPartyFields();
       syncAddGuest();
       syncPartyCount();
