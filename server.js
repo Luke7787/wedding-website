@@ -21,7 +21,7 @@ function clientIp(req) {
 function rateLimited(ip) {
   const now = Date.now();
   const windowMs = 60 * 60 * 1000;
-  const max = 40;
+  const max = 10;
   const current = (hitsByIp.get(ip) || []).filter(
     (time) => now - time < windowMs,
   );
@@ -73,6 +73,18 @@ async function rsvpsCollection() {
 app.post("/api/rsvp", async (req, res) => {
   if (rateLimited(clientIp(req))) {
     return res.status(429).json({ error: "Please wait and try again." });
+  }
+
+  if (cleanText(req.body?.fax, 200)) {
+    return res.json({ ok: true });
+  }
+
+  const openedAt = Number(req.body?.openedAt);
+  const elapsed = Date.now() - openedAt;
+  if (!Number.isFinite(openedAt) || elapsed < 2000 || elapsed > 1000 * 60 * 60 * 12) {
+    return res.status(400).json({
+      error: "Please wait a moment and try again.",
+    });
   }
 
   const fullName = cleanText(req.body?.name, 120);

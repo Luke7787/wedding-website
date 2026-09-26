@@ -619,6 +619,13 @@
         outline-offset: 1px;
       }
 
+      .rsvp-fax {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
       .rsvp-box {
         max-width: 480px;
         margin: 0 auto;
@@ -1641,6 +1648,15 @@
               Let us know if you can join us on Saturday, June 19th, 2027.
             </p>
             <form class="rsvp-box" id="rsvp-form">
+              <div class="rsvp-fax" aria-hidden="true">
+                <label for="rsvp-fax">Fax</label>
+                <input
+                  id="rsvp-fax"
+                  name="fax"
+                  tabindex="-1"
+                  autocomplete="off"
+                />
+              </div>
               <p class="party-count" id="party-count">Party of 1</p>
               <div class="field">
                 <label for="rsvp-name">Your name</label>
@@ -1868,6 +1884,7 @@
         lightboxImg.src = "";
       });
 
+      const rsvpOpenedAt = Date.now();
       const rsvpForm = document.getElementById("rsvp-form");
       const rsvpError = document.getElementById("rsvp-error");
       const rsvpThanks = document.getElementById("rsvp-thanks");
@@ -2021,6 +2038,8 @@
               name,
               attending,
               guests,
+              fax: document.getElementById("rsvp-fax").value,
+              openedAt: rsvpOpenedAt,
             }),
           });
           const data = await response.json().catch(() => ({}));
