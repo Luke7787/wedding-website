@@ -490,12 +490,9 @@
       }
       .event-links {
         margin-top: 16px;
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
       }
-      .event-links a {
-        text-decoration: underline;
+      .event-links .poi-view {
+        margin-top: 0;
       }
 
       .gallery-grid {
@@ -610,6 +607,9 @@
         flex-shrink: 0;
         background: center / 16px 16px no-repeat
           url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%234e4e4e' stroke-width='1.5'%3E%3Cpath d='M8 14.2s4.2-3.2 4.2-6.7A4.2 4.2 0 0 0 8 3.3a4.2 4.2 0 0 0-4.2 4.2c0 3.5 4.2 6.7 4.2 6.7z'/%3E%3Ccircle cx='8' cy='7.5' r='1.35'/%3E%3C/svg%3E");
+      }
+      .poi-stay::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%234e4e4e' stroke-width='1.5' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M2.75 7.25 8 2.75l5.25 4.5V13a.75.75 0 0 1-.75.75H3.5A.75.75 0 0 1 2.75 13V7.25z'/%3E%3Cpath d='M6.5 13.75V9.25h3v4.5'/%3E%3C/svg%3E");
       }
       .poi-view:hover {
         background: #eceae6;
@@ -1290,7 +1290,8 @@
                 </p>
                 <div class="event-links">
                   <a
-                    href="https://www.google.com/maps/place/1190+E+Clark+Ave,+Santa+Maria,+CA+93455/@34.8645102,-120.4173915,17z/data=!3m1!4b1!4m6!3m5!1s0x80ec1397baaf37fd:0x74afc2ba1c8e0d32!8m2!3d34.8645058!4d-120.4148166!16s%2Fg%2F11bw40qsq2?entry=ttu&g_ep=EgoyMDI2MDkxNC4wIKXMDSoASAFQAw%3D%3D"
+                    class="poi-view"
+                    href="https://www.google.com/maps/place/St.+Louis+de+Montfort+Church/@34.8650001,-120.4174374,17z/data=!4m15!1m8!3m7!1s0x80ec1397baaf37fd:0x74afc2ba1c8e0d32!2s1190+E+Clark+Ave,+Santa+Maria,+CA+93455!3b1!8m2!3d34.8645058!4d-120.4148166!16s%2Fg%2F11bw40qsq2!3m5!1s0x80ec1397a4fb6d3b:0x6bee1d8919070081!8m2!3d34.8646476!4d-120.4148188!16s%2Fg%2F1tdfcdyb?entry=ttu&g_ep=EgoyMDI2MDkyMy4wIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noreferrer"
                     >Directions</a
@@ -1312,6 +1313,7 @@
                 </p>
                 <div class="event-links">
                   <a
+                    class="poi-view"
                     href="https://www.google.com/maps/place/Edwards+Barn/@35.0469287,-120.5274788,17z/data=!3m1!4b1!4m6!3m5!1s0x80ec67fe336ea0a7:0x17c5cf3d29fd9403!8m2!3d35.0469243!4d-120.5249039!16s%2Fg%2F11crzvr599?entry=ttu&g_ep=EgoyMDI2MDkxNC4wIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noreferrer"
@@ -1333,6 +1335,7 @@
                 </p>
                 <div class="event-links">
                   <a
+                    class="poi-view"
                     href="https://www.google.com/maps/place/Edwards+Barn/@35.0469287,-120.5274788,17z/data=!3m1!4b1!4m6!3m5!1s0x80ec67fe336ea0a7:0x17c5cf3d29fd9403!8m2!3d35.0469243!4d-120.5249039!16s%2Fg%2F11crzvr599?entry=ttu&g_ep=EgoyMDI2MDkxNC4wIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noreferrer"
@@ -1364,6 +1367,7 @@
                 </p>
                 <div class="event-links">
                   <a
+                    class="poi-view"
                     href="https://maps.google.com/?q=The+Agrarian+Hotel+BW+Signature+Collection+325+E+Branch+St+Arroyo+Grande+CA+93420"
                     target="_blank"
                     rel="noreferrer"
@@ -1382,6 +1386,7 @@
                 </p>
                 <div class="event-links">
                   <a
+                    class="poi-view poi-stay"
                     href="https://www.airbnb.com/"
                     target="_blank"
                     rel="noreferrer"
