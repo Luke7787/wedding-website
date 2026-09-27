@@ -537,12 +537,41 @@
       }
       .gallery-grid button {
         display: block;
+        position: relative;
         width: 100%;
         padding: 0;
         border: 0;
         background: none;
         cursor: pointer;
         overflow: hidden;
+      }
+      .gallery-grid button::before {
+        content: "Click to view";
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 7px 12px 8px;
+        border-radius: 18px;
+        background: var(--bg);
+        color: var(--ink);
+        font-size: 13px;
+        line-height: 1.2;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+      }
+      @media (hover: hover) and (pointer: fine) {
+        .gallery-grid button:hover img,
+        .gallery-grid button:focus-visible img {
+          filter: brightness(0.88);
+        }
+        .gallery-grid button:hover::before,
+        .gallery-grid button:focus-visible::before {
+          opacity: 1;
+        }
       }
       .gallery-grid img {
         width: 100%;
@@ -1930,6 +1959,7 @@
       startHomeMarquee();
 
       document.querySelectorAll(".gallery-grid button").forEach((button) => {
+        button.setAttribute("aria-label", "View full photo");
         button.addEventListener("click", () => {
           lightboxImg.src = button.dataset.full;
           lightbox.classList.add("is-open");
