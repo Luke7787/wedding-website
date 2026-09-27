@@ -188,31 +188,22 @@
       }
       .nav-item {
         margin: 0 12px;
-        padding: 8px 0;
+        padding: 8px 0 0;
         position: relative;
       }
-      .nav-item::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 3px;
-        background: var(--ink);
-        transform: scaleX(0);
-        transition: transform 0.3s;
+      .nav-item:not([data-nav="rsvp"]) a {
+        display: inline-block;
+        padding-bottom: 5px;
+        border-bottom: 3px solid transparent;
       }
-      .nav-item:hover::after,
-      .nav-item.is-active::after,
-      .nav-item:focus-within::after {
-        transform: scaleX(1);
+      .nav-item:not([data-nav="rsvp"]):hover a,
+      .nav-item:not([data-nav="rsvp"]).is-active a,
+      .nav-item:not([data-nav="rsvp"]) a:focus-visible {
+        border-bottom-color: var(--ink);
       }
       .nav-item[data-nav="rsvp"] {
         margin-left: 20px;
         padding: 0;
-      }
-      .nav-item[data-nav="rsvp"]::after {
-        content: none;
       }
       .nav-item[data-nav="rsvp"] a {
         display: inline-block;
@@ -1881,7 +1872,9 @@
           page.classList.toggle("is-active", page.dataset.page === id);
         });
         document.querySelectorAll(".nav-item").forEach((item) => {
-          item.classList.toggle("is-active", item.dataset.nav === id);
+          const on = item.dataset.nav === id;
+          item.classList.toggle("is-active", on);
+          if (!on) item.querySelector("a")?.blur();
         });
         document.title =
           id === "home"
