@@ -223,11 +223,17 @@
         box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ink);
       }
 
-      .page {
-        display: none;
+      main {
+        position: relative;
       }
-      .page.is-active {
-        display: block;
+      .page:not(.is-active) {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 0;
+        overflow: hidden;
+        visibility: hidden;
+        pointer-events: none;
       }
 
       .hero {
@@ -1412,21 +1418,27 @@
                 </div>
               </article>
               <article class="travel-card">
+                <img
+                  src="./images/airbnb.jpg"
+                  alt="Vacation home with a pool"
+                />
                 <h3>Airbnb</h3>
-                <div class="travel-meta">Vacation Home Rentals</div>
+                <div class="travel-meta">
+                  Search Nipomo or Arroyo Grande for June 18–20
+                </div>
                 <p class="travel-note">
-                  Prefer a home rental? Airbnb offers a variety of options in
-                  and around Nipomo, Arroyo Grande, and the Central Coast, so
-                  you can choose the location and accommodations that work best
-                  for you.
+                  Prefer a home rental? Search those towns for the nights of
+                  June 18–20, 2027, so you are close to the reception. The link
+                  below opens Airbnb with Nipomo and those dates already filled
+                  in.
                 </p>
                 <div class="event-links">
                   <a
                     class="poi-view poi-stay"
-                    href="https://www.airbnb.com/"
+                    href="https://www.airbnb.com/s/Nipomo--California/homes?checkin=2027-06-18&checkout=2027-06-20"
                     target="_blank"
                     rel="noreferrer"
-                    >View Airbnb Options</a
+                    >Search Airbnb</a
                   >
                 </div>
               </article>
@@ -1815,6 +1827,7 @@
         marqueePxPerSecond =
           (nextLoopWidth + marqueeOriginals[0].offsetWidth) /
           MARQUEE_OLD_DURATION;
+        marqueeTrack.style.transform = `translateX(${-marqueeOffset}px)`;
       }
 
       function tickMarquee(now) {
@@ -1869,7 +1882,9 @@
 
       function showPage(id) {
         document.querySelectorAll(".page").forEach((page) => {
-          page.classList.toggle("is-active", page.dataset.page === id);
+          const on = page.dataset.page === id;
+          page.classList.toggle("is-active", on);
+          page.inert = !on;
         });
         document.querySelectorAll(".nav-item").forEach((item) => {
           const on = item.dataset.nav === id;
