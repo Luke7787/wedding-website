@@ -113,6 +113,19 @@
         gap: 18px;
         margin-top: 32px;
       }
+      .drawer-nav a[href="#rsvp"] {
+        margin-top: 8px;
+        padding: 12px 28px;
+        border-radius: 4px;
+        background: var(--ink);
+        color: var(--white);
+        font-weight: 600;
+        line-height: 1.2;
+        transition: background 0.15s ease;
+      }
+      .drawer-nav a[href="#rsvp"]:hover {
+        background: #3a3a3a;
+      }
 
       .hamburger-wrap {
         display: none;
@@ -162,6 +175,7 @@
       }
       .nav-list {
         display: flex;
+        align-items: center;
         justify-content: safe center;
         margin: 0;
         padding: 0;
@@ -192,6 +206,30 @@
       .nav-item.is-active::after,
       .nav-item:focus-within::after {
         transform: scaleX(1);
+      }
+      .nav-item[data-nav="rsvp"] {
+        margin-left: 20px;
+        padding: 0;
+      }
+      .nav-item[data-nav="rsvp"]::after {
+        content: none;
+      }
+      .nav-item[data-nav="rsvp"] a {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 4px;
+        background: var(--ink);
+        color: var(--white);
+        font-weight: 600;
+        line-height: 1.2;
+        transition: background 0.15s ease;
+      }
+      .nav-item[data-nav="rsvp"] a:hover {
+        background: #3a3a3a;
+      }
+      .nav-item[data-nav="rsvp"].is-active a {
+        background: #3a3a3a;
+        box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ink);
       }
 
       .page {
@@ -1869,6 +1907,16 @@
       });
       window.addEventListener("hashchange", syncFromHash);
       syncFromHash();
+
+      document.querySelectorAll('a[href^="#"]').forEach((link) => {
+        const id = link.getAttribute("href").slice(1);
+        if (!pages.includes(id)) return;
+        link.addEventListener("click", (event) => {
+          if (currentPage() !== id) return;
+          event.preventDefault();
+          window.scrollTo(0, 0);
+        });
+      });
 
       window.addEventListener("resize", layoutHomeMarquee);
       startHomeMarquee();
