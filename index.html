@@ -223,17 +223,8 @@
         box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ink);
       }
 
-      main {
-        position: relative;
-      }
       .page:not(.is-active) {
-        position: absolute;
-        left: 0;
-        width: 100%;
-        height: 0;
-        overflow: hidden;
-        visibility: hidden;
-        pointer-events: none;
+        display: none;
       }
 
       .hero {
@@ -1911,14 +1902,10 @@
 
       function showPage(id) {
         document.querySelectorAll(".page").forEach((page) => {
-          const on = page.dataset.page === id;
-          page.classList.toggle("is-active", on);
-          page.inert = !on;
+          page.classList.toggle("is-active", page.dataset.page === id);
         });
         document.querySelectorAll(".nav-item").forEach((item) => {
-          const on = item.dataset.nav === id;
-          item.classList.toggle("is-active", on);
-          if (!on) item.querySelector("a")?.blur();
+          item.classList.toggle("is-active", item.dataset.nav === id);
         });
         document.title =
           id === "home"
@@ -1936,6 +1923,18 @@
         showPage(currentPage());
       }
 
+      function navigateTo(id) {
+        if (currentPage() === id) {
+          window.scrollTo(0, 0);
+          return;
+        }
+        const nextHash = "#" + id;
+        if (location.hash !== nextHash) {
+          history.pushState(null, "", nextHash);
+        }
+        showPage(id);
+      }
+
       openBtn.addEventListener("click", openMenu);
       closeBtn.addEventListener("click", closeMenu);
       overlay.addEventListener("click", closeMenu);
@@ -1943,15 +1942,15 @@
         link.addEventListener("click", closeMenu);
       });
       window.addEventListener("hashchange", syncFromHash);
+      window.addEventListener("popstate", syncFromHash);
       syncFromHash();
 
       document.querySelectorAll('a[href^="#"]').forEach((link) => {
         const id = link.getAttribute("href").slice(1);
         if (!pages.includes(id)) return;
         link.addEventListener("click", (event) => {
-          if (currentPage() !== id) return;
           event.preventDefault();
-          window.scrollTo(0, 0);
+          navigateTo(id);
         });
       });
 
