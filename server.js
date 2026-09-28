@@ -1,11 +1,15 @@
 const path = require("path");
 const express = require("express");
+const nodemailer = require("nodemailer");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
 const PORT = Number(process.env.PORT) || 8787;
 const MONGODB_URI = process.env.MONGODB_URI || "";
 const ADMIN_KEY = process.env.ADMIN_KEY || "";
+const SMTP_USER = process.env.SMTP_USER || "";
+const SMTP_PASS = process.env.SMTP_PASS || "";
+const RSVP_NOTIFY_TO = "lukewzhuang@gmail.com";
 const EVENT_DATE = "Saturday, June 19th, 2027";
 
 const app = express();
@@ -47,6 +51,73 @@ function splitName(fullName) {
 }
 
 let collectionPromise;
+let mailer;
+
+function formatPacific(date) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles",
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  }).format(date);
+}
+
+function rsvpMessage(doc) {
+  const status = doc.attending ? "Attending" : "Declining";
+  const names = doc.attending
+    ? doc.guests.map((guest, index) => index + 1 + ". " + guest.name)
+    : [doc.name];
+  const subject = doc.attending
+    ? "RSVP: " + doc.name + " is attending (" + doc.partySize + ")"
+    : "RSVP: " + doc.name + " is declining";
+  const text = [
+    "Who submitted: " + doc.name,
+    "Response: " + status,
+    "Party size: " + doc.partySize,
+    "",
+    "Everyone:",
+    ...names,
+    "",
+    "Submitted " + formatPacific(doc.updatedAt),
+  ].join("\n");
+  return { subject, text };
+}
+
+function mailTransport() {
+  if (!SMTP_USER || !SMTP_PASS) return null;
+  if (!mailer) {
+    mailer = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+    });
+  }
+  return mailer;
+}
+
+async function sendRsvpEmail(doc) {
+  const transport = mailTransport();
+  if (!transport) {
+    console.log(
+      "RSVP saved for " +
+        doc.name +
+        ". Add SMTP_PASS in .env to email " +
+        RSVP_NOTIFY_TO +
+        ".",
+    );
+    return;
+  }
+  const message = rsvpMessage(doc);
+  await transport.sendMail({
+    from: '"Luke & Gizelle" <' + SMTP_USER + ">",
+    to: RSVP_NOTIFY_TO,
+    subject: message.subject,
+    text: message.text,
+  });
+}
 
 async function rsvpsCollection() {
   if (!MONGODB_URI) {
@@ -140,6 +211,11 @@ app.post("/api/rsvp", async (req, res) => {
       { $set: doc, $setOnInsert: { createdAt: new Date() } },
       { upsert: true },
     );
+    try {
+      await sendRsvpEmail(doc);
+    } catch (emailError) {
+      console.error("RSVP saved, but the email could not be sent.", emailError);
+    }
     return res.json({ ok: true });
   } catch (error) {
     if (error.message === "missing_uri") {
@@ -189,5 +265,8 @@ app.listen(PORT, () => {
   console.log("RSVP API listening on http://127.0.0.1:" + PORT);
   if (!MONGODB_URI) {
     console.log("Set MONGODB_URI in .env to save RSVPs.");
+  }
+  if (!SMTP_USER || !SMTP_PASS) {
+    console.log("Set SMTP_USER and SMTP_PASS in .env to email RSVPs.");
   }
 });
