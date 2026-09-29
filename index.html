@@ -1070,12 +1070,13 @@
           font-size: 32px;
         }
         .event-heading {
-          align-items: baseline;
+          container-type: inline-size;
           gap: 12px;
         }
         .event-heading h3 {
+          min-width: max-content;
           white-space: nowrap;
-          font-size: clamp(24px, 7.4vw, 32px);
+          font-size: clamp(18px, calc((100cqi - 180px) * 0.168), 32px);
         }
         .btn {
           width: 200px;
