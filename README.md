@@ -15,3 +15,9 @@
 - Express.js
 - MongoDB
 - Nodemailer
+
+## RSVP
+
+- Saves each response to MongoDB
+- Updates the saved RSVP if the same guest submits again
+- Sends a Gmail notification through Nodemailer
