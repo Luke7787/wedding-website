@@ -652,7 +652,6 @@
       }
       .poi-card p {
         margin-bottom: 0;
-        text-align: justify;
       }
       .poi-view {
         display: flex;
@@ -1070,13 +1069,17 @@
           font-size: 32px;
         }
         .event-heading {
-          container-type: inline-size;
-          gap: 12px;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0;
         }
         .event-heading h3 {
-          min-width: max-content;
-          white-space: nowrap;
-          font-size: clamp(18px, calc((100cqi - 180px) * 0.168), 32px);
+          min-width: 0;
+          white-space: normal;
+          font-size: 32px;
+        }
+        .event-time {
+          text-align: left;
         }
         .btn {
           width: 200px;
