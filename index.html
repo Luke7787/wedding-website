@@ -359,6 +359,9 @@
       .story-photo {
         width: 100%;
         margin-top: 8px;
+        /* Pull the photo up to the bottom of the last line of text. */
+        margin-bottom: 3px;
+        transform: translateY(-3px);
         flex: 1 1 auto;
         min-height: 0;
         height: 1px;
@@ -391,13 +394,6 @@
       }
       .story-copy p + p {
         margin-top: 1.6em;
-      }
-      .story-rule {
-        position: absolute;
-        left: 50%;
-        width: 1px;
-        height: 100%;
-        background: var(--ink);
       }
 
       .footer-photo {
@@ -1034,9 +1030,6 @@
         .content {
           padding-top: 8px;
         }
-        .story-rule {
-          display: none;
-        }
         .gallery-grid {
           grid-template-columns: 1fr 1fr;
         }
@@ -1118,6 +1111,8 @@
           height: auto;
           flex: none;
           margin-top: 28px;
+          margin-bottom: 0;
+          transform: none;
           object-fit: unset;
         }
         .party-grid,
@@ -1262,7 +1257,6 @@
                     alt="Luke and Gizelle together at a table"
                   />
                 </div>
-                <div class="story-rule"></div>
                 <div class="story-copy">
                   <p>
                     Sometimes, you meet someone without realizing just how
@@ -1298,7 +1292,6 @@
                     alt="Luke proposing to Gizelle at Baker Beach"
                   />
                 </div>
-                <div class="story-rule"></div>
                 <div class="story-copy">
                   <p>
                     For our 3rd year anniversary of dating, I had Gizelle come
