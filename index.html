@@ -349,6 +349,25 @@
         align-items: flex-start;
         overflow-wrap: anywhere;
       }
+      .story.has-photo {
+        align-items: stretch;
+      }
+      .story.has-photo .story-title {
+        display: flex;
+        flex-direction: column;
+      }
+      .story-photo {
+        width: 100%;
+        margin-top: 8px;
+        flex: 1 1 auto;
+        min-height: 0;
+        height: 1px;
+        object-fit: cover;
+        object-position: center 62%;
+      }
+      .story-photo.how-we-met {
+        object-position: center 33%;
+      }
       .story + .story {
         margin-top: 100px;
       }
@@ -1095,6 +1114,12 @@
           width: 100%;
           padding: 0;
         }
+        .story-photo {
+          height: auto;
+          flex: none;
+          margin-top: 28px;
+          object-fit: unset;
+        }
         .party-grid,
         .poi-grid,
         .gallery-grid,
@@ -1227,10 +1252,15 @@
               <a class="btn" href="#rsvp">RSVP</a>
             </div>
             <div class="stories">
-              <article class="story">
+              <article class="story has-photo">
                 <div class="story-title">
                   <h3>How We Met</h3>
                   <div class="story-date">4.1.23</div>
+                  <img
+                    class="story-photo how-we-met"
+                    src="./images/how-we-met.jpg"
+                    alt="Luke and Gizelle together at a table"
+                  />
                 </div>
                 <div class="story-rule"></div>
                 <div class="story-copy">
@@ -1258,10 +1288,15 @@
                   </p>
                 </div>
               </article>
-              <article class="story">
+              <article class="story has-photo">
                 <div class="story-title">
                   <h3>The Proposal</h3>
                   <div class="story-date">4.4.26</div>
+                  <img
+                    class="story-photo"
+                    src="./images/proposal.jpg"
+                    alt="Luke proposing to Gizelle at Baker Beach"
+                  />
                 </div>
                 <div class="story-rule"></div>
                 <div class="story-copy">
