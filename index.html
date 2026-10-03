@@ -486,6 +486,32 @@
       .faq-item:first-child {
         padding-top: 0;
       }
+      #faqs .page-title {
+        margin-bottom: 40px;
+      }
+      #faqs .faq-list {
+        border-top: 1px solid #d7d3ce;
+      }
+      #faqs .faq-item:first-child {
+        padding-top: 32px;
+      }
+      #schedule .inner,
+      #travel .inner,
+      #gallery .inner,
+      #things-to-do .inner,
+      #faqs .inner,
+      #rsvp .inner {
+        padding-bottom: 0;
+      }
+      body[data-active-page="schedule"] .site-footer,
+      body[data-active-page="travel"] .site-footer,
+      body[data-active-page="gallery"] .site-footer,
+      body[data-active-page="things-to-do"] .site-footer,
+      body[data-active-page="faqs"] .site-footer,
+      body[data-active-page="rsvp"] .site-footer {
+        margin-top: 0;
+        padding-top: 40px;
+      }
       .event-date {
         margin-bottom: 8px;
       }
@@ -1988,6 +2014,7 @@
       }
 
       function showPage(id) {
+        document.body.dataset.activePage = id;
         document.querySelectorAll(".page").forEach((page) => {
           page.classList.toggle("is-active", page.dataset.page === id);
         });
