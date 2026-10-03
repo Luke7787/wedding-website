@@ -928,13 +928,30 @@
       .confirm-actions .btn:hover:not(:disabled):not(.ghost) {
         background: #3a3a3a;
       }
+      .form-note,
       .rsvp-error {
-        color: #8a2a2a;
-        margin-top: 8px;
+        margin: 10px 0 0;
+        padding: 12px 14px;
+        border: 1px solid #d7d3ce;
+        border-radius: 8px;
+        background: #fff;
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.45;
+      }
+      .form-note[hidden],
+      .rsvp-error {
         display: none;
+      }
+      .rsvp-error {
+        margin: 0 0 16px;
       }
       .rsvp-error.is-visible {
         display: block;
+      }
+      .field input.is-invalid,
+      .guest-row input.is-invalid {
+        border-color: #8a2a2a;
       }
 
       .lightbox {
@@ -1771,10 +1788,8 @@
         <section class="page" data-page="rsvp" id="rsvp">
           <div class="inner">
             <h1 class="page-title" aria-label="RSVP">Rsvp</h1>
-            <p class="page-intro">
-              Let us know if you can join us on Saturday, June 19th, 2027.
-            </p>
-            <form class="rsvp-box" id="rsvp-form">
+            <p class="page-intro">Saturday, June 19th, 2027</p>
+            <form class="rsvp-box" id="rsvp-form" novalidate>
               <div class="rsvp-fax" aria-hidden="true">
                 <label for="rsvp-fax">Fax</label>
                 <input
@@ -1792,7 +1807,11 @@
                   name="name"
                   autocomplete="name"
                   required
+                  aria-describedby="name-error"
                 />
+                <p class="form-note" id="name-error" hidden>
+                  Please enter your name.
+                </p>
               </div>
               <p class="rsvp-prompt">Will you be able to join us?</p>
               <div
@@ -2119,6 +2138,10 @@
           syncAddGuest();
           syncPartyCount();
         });
+        input.addEventListener("input", () => {
+          clearInvalid(input);
+          rsvpError.classList.remove("is-visible");
+        });
         row.append(number, input, remove);
         guestList.append(row);
         syncGuestNumbers();
@@ -2136,9 +2159,30 @@
         });
       }
 
+      const nameInput = document.getElementById("rsvp-name");
+      const nameError = document.getElementById("name-error");
+
+      function clearInvalid(input) {
+        input.classList.remove("is-invalid");
+        input.removeAttribute("aria-invalid");
+      }
+
+      function markInvalid(input) {
+        input.classList.add("is-invalid");
+        input.setAttribute("aria-invalid", "true");
+      }
+
+      function clearFormNotes() {
+        nameError.hidden = true;
+        clearInvalid(nameInput);
+        guestList.querySelectorAll("input").forEach(clearInvalid);
+        rsvpError.classList.remove("is-visible");
+      }
+
       function resetRsvpForm() {
         rsvpForm.reset();
         guestList.replaceChildren();
+        clearFormNotes();
         syncPartyFields();
         syncAddGuest();
         syncPartyCount();
@@ -2222,24 +2266,37 @@
         }
       }
 
+      nameInput.addEventListener("input", () => {
+        clearInvalid(nameInput);
+        nameError.hidden = true;
+      });
+
       rsvpForm.addEventListener("submit", (event) => {
         event.preventDefault();
-        const name = document.getElementById("rsvp-name").value.trim();
+        const name = nameInput.value.trim();
         const attending = isAttending();
         const extras = attending ? collectExtraGuests() : [];
         rsvpThanks.classList.remove("is-visible");
+        clearFormNotes();
         if (!name) {
-          rsvpError.textContent = "Please enter your name.";
-          rsvpError.classList.add("is-visible");
+          markInvalid(nameInput);
+          nameError.hidden = false;
+          nameInput.focus();
           return;
         }
         if (attending && extras.some((guest) => !guest)) {
+          const emptyGuest = [
+            ...guestList.querySelectorAll('[name="guest-name"]'),
+          ].find((input) => !input.value.trim());
+          if (emptyGuest) {
+            markInvalid(emptyGuest);
+            emptyGuest.focus();
+          }
           rsvpError.textContent =
             "Please enter a name for each guest, or remove the empty row.";
           rsvpError.classList.add("is-visible");
           return;
         }
-        rsvpError.classList.remove("is-visible");
         openConfirm(name, attending, extras);
       });
       confirmBack.addEventListener("click", closeConfirm);
