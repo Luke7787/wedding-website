@@ -2284,6 +2284,9 @@
           ? [name, ...extras].map((guestName) => ({ name: guestName }))
           : [];
         try {
+          if (navigator.onLine === false) {
+            throw new TypeError("offline");
+          }
           const response = await fetch("/api/rsvp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -2303,9 +2306,12 @@
           showRsvpThanks();
         } catch (error) {
           closeConfirm();
-          rsvpError.textContent =
-            error.message ||
-            "Could not save your RSVP. Please try again in a moment.";
+          const couldNotReachServer =
+            navigator.onLine === false || error instanceof TypeError;
+          rsvpError.textContent = couldNotReachServer
+            ? "No internet connection. Check your connection and try again."
+            : error.message ||
+              "Could not save your RSVP. Please try again in a moment.";
           rsvpError.classList.add("is-visible");
         } finally {
           confirmSend.disabled = false;
