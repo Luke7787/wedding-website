@@ -1,5 +1,5 @@
 # Luke & Gizelle Wedding Website
-- Live Site:
+- Live Site: https://luke-and-gizelle-wedding.onrender.com/
 
 ## Frontend
 
