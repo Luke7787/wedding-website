@@ -897,11 +897,15 @@
       }
       .rsvp-thanks {
         display: none;
-        margin-top: 24px;
+        margin: 0 0 20px;
         text-align: center;
+        scroll-margin: 96px;
       }
       .rsvp-thanks.is-visible {
         display: block;
+      }
+      .rsvp-thanks:focus {
+        outline: none;
       }
       .confirm {
         position: fixed;
@@ -1816,6 +1820,14 @@
             <h1 class="page-title" aria-label="RSVP">Rsvp</h1>
             <p class="page-intro">Saturday, June 19th, 2027</p>
             <form class="rsvp-box" id="rsvp-form" novalidate>
+              <div
+                class="rsvp-thanks"
+                id="rsvp-thanks"
+                tabindex="-1"
+                role="status"
+              >
+                Thank you — your RSVP has been saved.
+              </div>
               <div class="rsvp-fax" aria-hidden="true">
                 <label for="rsvp-fax">Fax</label>
                 <input
@@ -1865,9 +1877,6 @@
               <button class="btn" type="submit" id="rsvp-submit">
                 Submit RSVP
               </button>
-              <div class="rsvp-thanks" id="rsvp-thanks">
-                Thank you — your RSVP has been saved.
-              </div>
             </form>
           </div>
         </section>
@@ -2254,6 +2263,19 @@
         rsvpSubmit.focus();
       }
 
+      function showRsvpThanks() {
+        rsvpConfirm.hidden = true;
+        rsvpThanks.classList.add("is-visible");
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+        rsvpThanks.focus({ preventScroll: true });
+        rsvpThanks.scrollIntoView({
+          block: "center",
+          behavior: reduceMotion ? "auto" : "smooth",
+        });
+      }
+
       async function saveRsvp(name, attending, extras) {
         confirmSend.disabled = true;
         confirmBack.disabled = true;
@@ -2277,9 +2299,8 @@
           if (!response.ok) {
             throw new Error(data.error || "Could not save your RSVP.");
           }
-          closeConfirm();
           resetRsvpForm();
-          rsvpThanks.classList.add("is-visible");
+          showRsvpThanks();
         } catch (error) {
           closeConfirm();
           rsvpError.textContent =
