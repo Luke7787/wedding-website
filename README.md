@@ -27,6 +27,6 @@ Hosted on Render as a Web Service from the `main` branch.
 
 ## RSVP
 
-- Saves each response to MongoDB
-- Updates the saved RSVP if the same guest submits again
+- Updates the RSVP if the same guest submits again
 - Sends a Gmail notification through Nodemailer
+- Saves each response to MongoDB
