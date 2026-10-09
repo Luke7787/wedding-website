@@ -21,10 +21,10 @@
 
 Hosted on Render as a Web Service from the `main` branch.
 
+- Environment variables: `MONGODB_URI`, `ADMIN_KEY`, `SMTP_USER`, `SMTP_PASS`
 - Build command: `npm install && npm run build`
 - Start command: `npm start`
-- Environment variables: `MONGODB_URI`, `ADMIN_KEY`, `SMTP_USER`, `SMTP_PASS`
-- Render sets `PORT` itself, so that variable stays out of the dashboard
+- Render sets `PORT` itself
 
 ## RSVP
 
