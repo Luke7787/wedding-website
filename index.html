@@ -340,7 +340,6 @@
 
       .stories {
         margin-top: 80px;
-        padding-bottom: 80px;
         text-align: left;
       }
       .story {
@@ -397,7 +396,9 @@
       }
 
       .footer-photo {
-        margin: 80px 0 0;
+        /* Top space matches the gap down to "Luke & Gizelle".
+           Side space lines the photo up with the story text and photos. */
+        margin: 90px 32px 0;
       }
       .footer-photo img {
         width: 100%;
@@ -1154,6 +1155,9 @@
           margin-bottom: 1.6em;
           transform: none;
           object-fit: unset;
+        }
+        .footer-photo {
+          margin: 101px 0 0;
         }
         .party-grid,
         .poi-grid,
