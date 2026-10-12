@@ -916,26 +916,66 @@
         align-items: center;
         justify-content: center;
         padding: 24px;
-        background: rgba(78, 78, 78, 0.45);
+        background: rgba(48, 46, 44, 0.48);
+        backdrop-filter: blur(3px);
       }
       .confirm[hidden] {
         display: none;
       }
       .confirm-card {
-        width: min(420px, 100%);
-        padding: 28px 24px;
-        border-radius: 12px;
-        background: var(--bg);
+        position: relative;
+        width: min(440px, 100%);
+        padding: 40px 36px 28px;
+        border: 1px solid #b7b1aa;
+        border-radius: 16px;
+        background: var(--white);
         color: var(--ink);
         text-align: center;
+        box-shadow: 0 22px 50px rgba(40, 36, 32, 0.22);
+        animation: confirm-in 0.22s ease;
+      }
+      .confirm-card::before {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        border: 1px solid #e0dad3;
+        border-radius: 11px;
+        pointer-events: none;
       }
       .confirm-card h2 {
-        margin: 0 0 12px;
-        font-size: 22px;
+        width: fit-content;
+        margin: 0 auto;
+        font-family: "Pinyon Script", cursive;
+        font-size: 42px;
         font-weight: 400;
+        line-height: 1.15;
+      }
+      .confirm-card h2::after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 1px;
+        margin: 12px 0 0;
+        background: #b7b1aa;
       }
       .confirm-card p {
-        margin: 0 0 24px;
+        margin: 18px 0 28px;
+        line-height: 1.65;
+      }
+      @keyframes confirm-in {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .confirm-card {
+          animation: none;
+        }
       }
       .confirm-actions {
         display: grid;
@@ -1167,6 +1207,12 @@
         }
         .inner {
           padding-top: 72px;
+        }
+        .confirm-card {
+          padding: 36px 22px 22px;
+        }
+        .confirm-card h2 {
+          font-size: 36px;
         }
         .site-footer {
           padding: 20px 16px 40px;
@@ -1898,7 +1944,7 @@
         aria-modal="true"
         aria-labelledby="confirm-title"
       >
-        <h2 id="confirm-title">Confirm your RSVP</h2>
+        <h2 id="confirm-title">Confirm your Rsvp</h2>
         <p id="confirm-summary"></p>
         <div class="confirm-actions">
           <button class="btn ghost" type="button" id="confirm-back">
