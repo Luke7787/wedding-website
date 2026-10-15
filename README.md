@@ -4,16 +4,16 @@
 
 ## Frontend
 
-- HTML
-- CSS
 - JavaScript
 - Vite
+- HTML
+- CSS
 
 ## Backend
 
 - JavaScript
-- Node.js
 - Express.js
+- Node.js
 - MongoDB
 - Nodemailer
 
