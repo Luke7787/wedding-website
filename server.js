@@ -1,8 +1,13 @@
+const dns = require("node:dns");
 const path = require("path");
 const express = require("express");
 const nodemailer = require("nodemailer");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
+
+// Node 17+ prefers IPv6. Atlas Flex on Render often only answers IPv4,
+// which otherwise looks like a 30s hang and then "Could not save your RSVP."
+dns.setDefaultResultOrder("ipv4first");
 
 const PORT = Number(process.env.PORT) || 8787;
 const MONGODB_URI = process.env.MONGODB_URI || "";
@@ -125,13 +130,26 @@ async function rsvpsCollection() {
   }
   if (!collectionPromise) {
     collectionPromise = (async () => {
-      const client = new MongoClient(MONGODB_URI);
+      const client = new MongoClient(MONGODB_URI, {
+        serverSelectionTimeoutMS: 12000,
+        connectTimeoutMS: 10000,
+        retryWrites: true,
+      });
       await client.connect();
       const collection = client.db().collection("rsvps");
-      await collection.createIndex(
-        { firstNameLower: 1, lastNameLower: 1 },
-        { unique: true },
-      );
+      try {
+        await collection.createIndex(
+          { firstNameLower: 1, lastNameLower: 1 },
+          { unique: true },
+        );
+      } catch (indexError) {
+        console.error(
+          "Could not ensure RSVP index:",
+          indexError.name,
+          indexError.code,
+          indexError.message,
+        );
+      }
       return collection;
     })().catch((error) => {
       collectionPromise = null;
@@ -223,7 +241,12 @@ app.post("/api/rsvp", async (req, res) => {
         error: "RSVP storage is not configured yet.",
       });
     }
-    console.error(error);
+    console.error(
+      "RSVP save failed:",
+      error.name,
+      error.code,
+      error.message,
+    );
     return res.status(500).json({ error: "Could not save your RSVP." });
   }
 });
@@ -245,7 +268,12 @@ app.get("/api/rsvps", async (req, res) => {
         error: "RSVP storage is not configured yet.",
       });
     }
-    console.error(error);
+    console.error(
+      "RSVP list failed:",
+      error.name,
+      error.code,
+      error.message,
+    );
     return res.status(500).json({ error: "Could not load RSVPs." });
   }
 });
@@ -265,6 +293,17 @@ app.listen(PORT, () => {
   console.log("RSVP API listening on http://127.0.0.1:" + PORT);
   if (!MONGODB_URI) {
     console.log("Set MONGODB_URI in .env to save RSVPs.");
+  } else {
+    rsvpsCollection()
+      .then(() => console.log("MongoDB connected."))
+      .catch((error) => {
+        console.error(
+          "MongoDB connection failed:",
+          error.name,
+          error.code,
+          error.message,
+        );
+      });
   }
   if (!SMTP_USER || !SMTP_PASS) {
     console.log("Set SMTP_USER and SMTP_PASS in .env to email RSVPs.");
